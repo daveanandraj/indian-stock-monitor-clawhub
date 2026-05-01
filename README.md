@@ -81,17 +81,23 @@ On quiet days, **nothing**. Silence is the feature.
 
 ## Install
 
-### Option A — Drop into your local Claude skills folder
-Copy this entire folder into one of:
-- `~/.claude/skills/indian-stock-monitor/` (user-level)
-- Your team plugin's `skills/` directory
-- A custom path you configure in Claude
+### Recommended — via ClawHub
+```bash
+clawhub install your-username/indian-stock-monitor
+```
+This installs into your `./skills/` directory. Then in Claude, say *"set up stock monitor"*.
 
-### Option B — Share via plugin marketplace
-Bundle this folder into a plugin and publish to your team's or a public Claude plugin marketplace. The `manifest.json` in this folder has the metadata.
+### Alternative — manual
+Copy this entire folder into:
+- `~/.claude/skills/indian-stock-monitor/` (Claude Code user-level)
+- Your team plugin's `skills/` directory
+- Or any path Claude is configured to read skills from
 
 ### After install
-Just say *"set up stock monitor"* in any Claude conversation. The skill auto-loads, detects first-run state, and walks you through onboarding.
+Say *"set up stock monitor"* in any Claude conversation. The skill auto-loads, detects first-run state, and walks you through onboarding (see `examples/01-first-run-onboarding.md` for the full flow).
+
+## Publishing your fork to ClawHub
+See `PUBLISH.md` for the full step-by-step guide, including the verification checklist to run against the live ClawHub spec before submitting.
 
 ## Files in this skill
 

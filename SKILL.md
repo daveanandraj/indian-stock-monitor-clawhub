@@ -1,8 +1,70 @@
 ---
 name: indian-stock-monitor
-description: Daily intelligent monitoring of Indian stock holdings (NSE/BSE) AND conversational portfolio management. Stays SILENT by default — only notifies when a Sev-1 critical event hits a held stock (governance shocks, surveillance moves, credit downgrades, large earnings misses, block deals, FII cuts, etc.). Handles all portfolio updates conversationally — user describes changes in text ("I bought 50 HDFC at 1620", "sold all my TCS") or drops a screenshot of their broker app (Zerodha Kite, Groww, Upstox, Angel One, ICICI Direct, HDFC Securities, Kotak Neo, etc.) and the skill extracts holdings and updates after confirmation. On first run, walks the user through onboarding. Triggers on: "check my stocks", "stock morning brief", "portfolio check", "I bought/sold ...", "add ... to portfolio", "update my portfolio", "set up stock monitor", or scheduled daily run.
+slug: indian-stock-monitor
+displayName: Indian Stock Monitor
+description: Daily intelligent watchdog for Indian equity holdings (NSE/BSE). Silent by default — only notifies on Sev-1 critical events (governance shocks, surveillance moves, credit downgrades, large earnings misses, block deals, FII cuts). Conversational portfolio management via text or broker screenshot.
 version: 1.0.0
-license: MIT
+type: skill
+license: MIT-0
+author: your-name-here
+homepage: https://github.com/your-org/indian-stock-monitor
+repository: https://github.com/your-org/indian-stock-monitor
+category: finance
+tags:
+  - finance
+  - investing
+  - india
+  - nse
+  - bse
+  - portfolio
+  - alerts
+  - earnings
+  - monitoring
+invocation:
+  triggers:
+    - "check my stocks"
+    - "stock morning brief"
+    - "portfolio check"
+    - "anything I should know about my holdings"
+    - "I bought"
+    - "I sold"
+    - "add to portfolio"
+    - "update my portfolio"
+    - "trim"
+    - "exit"
+    - "set up stock monitor"
+    - "scan my holdings"
+  fileTypes:
+    - "image/png"
+    - "image/jpeg"
+metadata:
+  openclaw:
+    requires:
+      tools:
+        - WebSearch
+        - Read
+        - Write
+        - Edit
+        - AskUserQuestion
+      optional:
+        - mcp__scheduled-tasks__create_scheduled_task
+        - mcp__workspace__bash
+      env: []
+      binaries: []
+    dataFiles:
+      - portfolio.json
+      - competitors.json
+      - severity-rubric.md
+      - sources.md
+    stateDir: state/
+    outputDir: alerts/
+compatibility:
+  minClaudeVersion: opus-4-5
+  platforms:
+    - claude-code
+    - cowork
+    - claude-desktop
+disclaimer: Informational only. NOT investment advice. The author is not a SEBI-registered investment advisor.
 ---
 
 # Indian Stock Monitor

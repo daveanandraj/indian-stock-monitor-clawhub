@@ -1,4 +1,4 @@
-MIT License
+MIT No Attribution (MIT-0)
 
 Copyright (c) 2026 Indian Stock Monitor contributors
 
@@ -7,10 +7,7 @@ of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction, including without limitation the rights
 to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+furnished to do so.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -25,3 +22,6 @@ only and does not constitute investment, financial, legal, or tax advice.
 The authors are not SEBI-registered investment advisors. Stock investments
 are subject to market risk. Users are solely responsible for their own
 investment decisions. Past performance is not indicative of future results.
+
+Note: ClawHub publishes all skills under MIT-0 by default. This license
+matches that policy.
