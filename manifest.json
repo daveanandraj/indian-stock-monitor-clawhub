@@ -1,0 +1,49 @@
+{
+  "name": "indian-stock-monitor",
+  "displayName": "Indian Stock Monitor",
+  "version": "1.0.0",
+  "description": "Daily intelligent watchdog for Indian equity holdings (NSE/BSE). Silent by default — only notifies on Sev-1 critical events (governance shocks, surveillance moves, credit downgrades, earnings misses, block deals, FII cuts). Conversational portfolio management via text or broker screenshot.",
+  "author": "your-name-here",
+  "license": "MIT",
+  "homepage": "",
+  "repository": "",
+  "keywords": [
+    "stocks",
+    "investing",
+    "india",
+    "nse",
+    "bse",
+    "portfolio",
+    "alerts",
+    "earnings",
+    "fundamentals",
+    "monitoring"
+  ],
+  "type": "skill",
+  "entryPoint": "SKILL.md",
+  "requires": {
+    "tools": [
+      "WebSearch",
+      "Read",
+      "Write",
+      "Edit",
+      "AskUserQuestion",
+      "mcp__scheduled-tasks__create_scheduled_task",
+      "mcp__workspace__bash"
+    ]
+  },
+  "dataFiles": [
+    "portfolio.json",
+    "competitors.json",
+    "severity-rubric.md",
+    "sources.md"
+  ],
+  "stateDir": "state/",
+  "outputDir": "alerts/",
+  "compatibility": {
+    "minClaudeVersion": "opus-4-5",
+    "platforms": ["cowork", "claude-code", "claude-desktop"]
+  },
+  "categories": ["finance", "personal-productivity", "monitoring"],
+  "disclaimer": "Informational only. NOT investment advice. The author is not a SEBI-registered investment advisor."
+}

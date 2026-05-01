@@ -1,0 +1,33 @@
+{
+  "_comment": "Sector → peer mapping. The skill uses this to monitor competitor results & news. Add or override entries as you add stocks. Tickers are NSE symbols.",
+  "sector_peers": {
+    "IT Services": ["TCS", "INFY", "HCLTECH", "WIPRO", "TECHM", "LTIM", "PERSISTENT", "COFORGE", "MPHASIS"],
+    "Private Banks": ["HDFCBANK", "ICICIBANK", "AXISBANK", "KOTAKBANK", "INDUSINDBK", "IDFCFIRSTB"],
+    "PSU Banks": ["SBIN", "BANKBARODA", "CANBK", "PNB", "UNIONBANK"],
+    "NBFC": ["BAJFINANCE", "BAJAJFINSV", "CHOLAFIN", "SHRIRAMFIN", "M&MFIN", "LICHSGFIN"],
+    "Oil & Gas / Refining": ["RELIANCE", "ONGC", "IOC", "BPCL", "HPCL", "GAIL", "OIL"],
+    "Auto OEM": ["MARUTI", "M&M", "TATAMOTORS", "BAJAJ-AUTO", "EICHERMOT", "HEROMOTOCO", "TVSMOTOR"],
+    "Auto Ancillaries": ["BOSCHLTD", "MOTHERSON", "BHARATFORG", "EXIDEIND", "AMARAJABAT"],
+    "Cement": ["ULTRACEMCO", "SHREECEM", "AMBUJACEM", "ACC", "DALBHARAT", "RAMCOCEM"],
+    "FMCG": ["HINDUNILVR", "ITC", "NESTLEIND", "BRITANNIA", "DABUR", "MARICO", "GODREJCP", "TATACONSUM", "COLPAL"],
+    "Pharma": ["SUNPHARMA", "DRREDDY", "CIPLA", "DIVISLAB", "LUPIN", "AUROPHARMA", "TORNTPHARM", "ZYDUSLIFE"],
+    "Metals - Steel": ["TATASTEEL", "JSWSTEEL", "SAIL", "JINDALSTEL"],
+    "Metals - Non-ferrous": ["HINDALCO", "VEDL", "NATIONALUM", "HINDCOPPER"],
+    "Power - Generation": ["NTPC", "POWERGRID", "TATAPOWER", "ADANIPOWER", "JSWENERGY"],
+    "Power - Renewable": ["ADANIGREEN", "TATAPOWER", "NHPC", "SJVN"],
+    "Telecom": ["BHARTIARTL", "RELIANCE", "VODAFONE-IDEA", "TATACOMM"],
+    "Realty": ["DLF", "GODREJPROP", "OBEROIRLTY", "PRESTIGE", "BRIGADE", "MACROTECH", "PHOENIXLTD"],
+    "Consumer Durables": ["TITAN", "HAVELLS", "VOLTAS", "CROMPTON", "WHIRLPOOL", "DIXON", "BAJAJELEC"],
+    "Chemicals": ["PIDILITIND", "SRF", "AARTIIND", "DEEPAKNTR", "NAVINFLUOR", "PIIND"],
+    "Capital Goods": ["LT", "SIEMENS", "ABB", "BEL", "BHEL", "CUMMINSIND", "THERMAX"],
+    "Defence": ["HAL", "BEL", "BDL", "MAZDOCK", "COCHINSHIP"],
+    "Insurance": ["SBILIFE", "HDFCLIFE", "ICICIPRULI", "ICICIGI", "LICI", "MAXFIN"],
+    "Asset Management": ["HDFCAMC", "NAM-INDIA", "UTIAMC", "ABSLAMC"],
+    "Logistics": ["CONCOR", "BLUEDART", "DELHIVERY", "TCI", "MAHLOG"],
+    "Hospitality": ["INDHOTEL", "EIHOTEL", "CHALET", "LEMONTREE"],
+    "Aviation": ["INTERAVIA", "INDIGO", "SPICEJET"],
+    "Paints": ["ASIANPAINT", "BERGEPAINT", "KANSAINER", "AKZOINDIA", "INDIGOPNTS"],
+    "Conglomerate": ["RELIANCE", "ITC", "LT", "GRASIM", "ADANIENT", "TATACHEM"]
+  },
+  "ticker_to_sector": {}
+}

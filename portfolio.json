@@ -1,0 +1,13 @@
+{
+  "_comment": "Managed by indian-stock-monitor skill. Do not edit by hand — talk to Claude to update holdings. On first run, the skill will detect this empty state and walk you through onboarding.",
+  "_first_run": true,
+  "holdings": [],
+  "watchlist": [],
+  "preferences": {
+    "horizon": null,
+    "alert_threshold": null,
+    "delivery": null,
+    "timezone": "Asia/Kolkata",
+    "currency": "INR"
+  }
+}
