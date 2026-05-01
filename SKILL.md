@@ -6,9 +6,9 @@ description: Daily intelligent watchdog for Indian equity holdings (NSE/BSE). Si
 version: 1.0.0
 type: skill
 license: MIT-0
-author: your-name-here
-homepage: https://github.com/your-org/indian-stock-monitor
-repository: https://github.com/your-org/indian-stock-monitor
+author: daveanandraj
+homepage: https://github.com/daveanandraj/indian-stock-monitor-clawhub
+repository: https://github.com/daveanandraj/indian-stock-monitor-clawhub
 category: finance
 tags:
   - finance

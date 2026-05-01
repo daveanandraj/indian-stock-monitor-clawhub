@@ -3,10 +3,10 @@
   "displayName": "Indian Stock Monitor",
   "version": "1.0.0",
   "description": "Daily intelligent watchdog for Indian equity holdings (NSE/BSE). Silent by default — only notifies on Sev-1 critical events (governance shocks, surveillance moves, credit downgrades, earnings misses, block deals, FII cuts). Conversational portfolio management via text or broker screenshot.",
-  "author": "your-name-here",
+  "author": "daveanandraj",
   "license": "MIT",
-  "homepage": "",
-  "repository": "",
+  "homepage": "https://github.com/daveanandraj/indian-stock-monitor-clawhub",
+  "repository": "https://github.com/daveanandraj/indian-stock-monitor-clawhub",
   "keywords": [
     "stocks",
     "investing",
