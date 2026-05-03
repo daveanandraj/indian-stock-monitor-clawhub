@@ -3,7 +3,7 @@ name: indian-stock-monitor
 slug: indian-stock-monitor
 displayName: Indian Stock Monitor
 description: "Institutional-grade daily watchdog for Indian equity holdings (NSE/BSE). Built on 20 years of Indian market pattern recognition. Silent by default — surfaces only Sev-1 critical events: promoter pledge liquidation, governance collapse, cash flow manipulation, surveillance moves, earnings shocks, institutional exodus. Deep quarterly analysis with cash flow quality checks, segment-level drilldown, and management credibility tracking."
-version: 2.0.0
+version: 2.1.0
 type: skill
 license: MIT-0
 author: daveanandraj
@@ -62,11 +62,11 @@ metadata:
     stateDir: state/
     outputDir: alerts/
 compatibility:
-  minClaudeVersion: opus-4-5
   platforms:
+    - openclaw
     - claude-code
-    - cowork
-    - claude-desktop
+    - codex
+    - copilot
 disclaimer: Informational only. NOT investment advice. The author is not a SEBI-registered investment advisor. Stock investments are subject to market risk.
 ---
 
@@ -117,7 +117,7 @@ Use AskUserQuestion (if available) OR ask in chat:
 
 > "How would you like to share your portfolio?"
 > 1. **Drop a screenshot** of my broker app (Zerodha, Groww, Upstox, Angel One, etc.)
-> 2. **Describe in text** (e.g., "50 HDFC Bank at avg 1620, 10 Reliance at 2900")
+> 2. **Describe in text** (e.g., "50 shares of XYZ at avg 1500, 10 shares of ABC at 2900")
 > 3. **Skip for now**
 
 Follow Update Workflow (Update-2+) for processing.
@@ -152,11 +152,11 @@ Set `_first_run: false` in portfolio.json. Save.
 The user never edits portfolio.json. They describe changes or drop screenshots.
 
 ## Update-1 — Detect intent
-- **Buy**: "I bought 50 HDFC at 1620", "picked up Reliance today"
-- **Sell / Trim / Exit**: "sold all my Infy", "trimmed 20 of TCS", "booked profit on ITC"
+- **Buy**: "I bought 50 shares at 1620", "picked up XYZ today"
+- **Sell / Trim / Exit**: "sold all my XYZ", "trimmed 20 of ABC", "booked profit on PQR"
 - **Bulk update**: screenshot + "update my holdings"
-- **Watchlist**: "add Tata Motors to watchlist"
-- **Correction**: "my avg for HDFC is actually 1640"
+- **Watchlist**: "add XYZ to watchlist"
+- **Correction**: "my avg for XYZ is actually 1640"
 
 ## Update-2 — Gather information
 
@@ -166,7 +166,7 @@ Read image using vision. Extract: ticker/company name, quantity, average buy pri
 Common layouts:
 - **Zerodha Kite**: Instrument | Qty | Avg. cost | LTP | Cur. val | P&L
 - **Groww**: ticker, qty, "Avg. ₹X", "Invested ₹Y"
-- **Upstox / Angel One / ICICI Direct / HDFC Sec / Kotak Neo**: similar tabular
+- **Upstox / Angel One / ICICI Direct / Kotak Neo / other brokers**: similar tabular
 
 **CRUCIAL**: Before computing diff, ASK: *"Is this your complete portfolio, or just additions/changes?"* Default: layer onto existing. Never silently remove based on absence.
 
@@ -174,12 +174,7 @@ If truncated (scroll indicator, "+N more"), ask to scroll and re-upload.
 
 ### Text path
 Parse natural language:
-- Resolve company name → NSE ticker. If ambiguous, ASK. Common disambiguations:
-  - Tata → TCS / TATAMOTORS / TATASTEEL / TATAPOWER / TATACONSUM
-  - HDFC → HDFCBANK / HDFCLIFE / HDFCAMC
-  - Bajaj → BAJFINANCE / BAJAJFINSV / BAJAJ-AUTO
-  - Reliance → RELIANCE (single listed entity, but note conglomerate segments)
-  - Adani → ADANIENT / ADANIPORTS / ADANIPOWER / ADANIGREEN / AWL / ATGL
+- Resolve company name → NSE ticker. If ambiguous, ASK. Many Indian company names map to multiple tickers (e.g., a group name may have 5+ listed entities). Always confirm before assuming.
 - "all" / "exited" → full sell
 - "trimmed 20" → subtract from current
 - "I now hold 30" → set, don't add
@@ -189,7 +184,7 @@ Parse natural language:
 1. Look up `competitors.json` → `ticker_to_sector`. If found, use it.
 2. If not found, check `sector_peers`.
 3. If still not found, web search "{TICKER} NSE sector industry".
-4. For conglomerates (RELIANCE, LT, ITC, GRASIM, ADANIENT), also check `conglomerate_segments` in competitors.json and note the segment mapping.
+4. For conglomerates (check `conglomerate_segments` key in competitors.json), also note the segment mapping for the ticker if it exists.
 5. ADD the mapping to `competitors.json`. Never leave sector blank.
 
 ### Record holding start date
@@ -206,11 +201,11 @@ NEVER write without explicit confirmation:
 ```
 Proposed portfolio update:
 
-  ✱ ADD     RELIANCE   qty: 10     avg: ₹2,900   sector: Conglomerate (O2C + Digital + Retail)
-  ✏ UPDATE  HDFCBANK   qty: 50→75  avg: ₹1,620→₹1,607 (weighted)
-  ✗ REMOVE  WIPRO      (full exit)
+  ✱ ADD     {TICKER_A}  qty: 10     avg: ₹2,900   sector: {sector}
+  ✏ UPDATE  {TICKER_B}  qty: 50→75  avg: ₹1,620→₹1,607 (weighted)
+  ✗ REMOVE  {TICKER_C}  (full exit)
 
-  Concentration check: RELIANCE would be 28% of portfolio — within limits.
+  Concentration check: {TICKER_A} would be 28% of portfolio — within limits.
 
 Summary: +1 new, 1 increased, 1 exit. Net 2 holdings.
 
@@ -257,7 +252,7 @@ Run this before daily monitoring OR when user asks "how's my portfolio" / "portf
 - Report: "Your portfolio has {N} holdings across {M} sectors. Largest position: {TICKER} at {X}% of invested value."
 
 ## Health-2 — Correlation check
-- If 3+ holdings in same sector (e.g., HDFCBANK + ICICIBANK + KOTAKBANK), note: "You have high banking sector correlation. A sector-wide event (RBI policy, NPA cycle) would hit {X}% of your portfolio."
+- If 3+ holdings in same sector, note: "You have high {sector} correlation. A sector-wide event would hit {X}% of your portfolio."
 - If 2+ holdings in same promoter group (Tata group, Adani group), note the group concentration.
 
 ## Health-3 — Liquidity check
@@ -304,9 +299,8 @@ Quick search for:
 Search: US close (Dow/Nasdaq/S&P), GIFT Nifty, Brent crude, USD/INR, US 10Y yield, India VIX.
 
 Only flag if global shock directly maps to a holding:
-- Crude up >5% with ONGC/IOC/BPCL/HPCL held → flag
-- Crude up >5% with Reliance held → mixed (GRM benefits but petchem margin pressure) — note nuance
-- USD/INR sharp move (>1%) with IT stocks → flag tailwind/headwind
+- Crude up >5% with oil & gas / refining stocks held → flag (for diversified refiners, note that GRM benefits while petchem margins may compress)
+- USD/INR sharp move (>1%) with IT / pharma export stocks → flag tailwind/headwind
 - US 10Y yield spike >20bps → FII outflow risk, flag for all holdings
 
 ## Step 3 — Per-stock daily scan
@@ -361,8 +355,8 @@ For each sector:
 
 ### 3g. Conglomerate segment check (for multi-business companies)
 If the ticker is flagged as a conglomerate in `competitors.json → conglomerate_segments`:
-- Search for segment-specific news. For RELIANCE: O2C/refining margins (Singapore GRM), Jio subscriber/ARPU data, Retail store expansion/revenue, New Energy capex updates.
-- For L&T: infrastructure order book, IT services (LTIMindtree), financial services.
+- Look up the segment definitions and `key_metrics` for each segment in the data file.
+- Search for segment-specific news using those key metrics (e.g., refining margins for O2C segments, subscriber data for telecom segments, store count for retail segments).
 - A segment turning loss-making or cross-subsidy pattern = Sev-1.
 
 ## Step 4 — Severity classification
@@ -402,12 +396,11 @@ Pull cash flow statement (Screener cash flow tab or filing):
 - **Inventory days**: rising faster than revenue = demand slowdown or channel stuffing.
 
 ### 5d. Segment-wise analysis (critical for conglomerates)
-For companies with multiple reported segments:
+For companies with multiple reported segments (refer to `conglomerate_segments` in competitors.json for segment definitions):
 - Revenue and EBIT per segment vs previous quarter and same quarter last year.
 - Any segment turned EBIT-negative? → Sev-1.
 - Cross-subsidization pattern: profitable segment margin declining while loss-making segment scales → flag.
-- For **Reliance**: O2C (refining + petchem), Digital Services (Jio), Retail, Oil & Gas (E&P), New Energy.
-- For **HDFC Bank** post-merger: Retail Banking, Wholesale Banking, Treasury, Other Banking.
+- Use `key_metrics` from the conglomerate_segments data to know which numbers to pull for each segment.
 
 ### 5e. Vs consensus
 Pull consensus from Trendlyne or Moneycontrol:
@@ -424,7 +417,7 @@ Locate transcript (Screener Documents tab or company IR):
 5. **Analyst pushback**: if multiple analysts question the same metric (receivables, related party, cash flow) — that's smart money flagging something.
 6. **Duration/access**: significantly shorter concall or fewer questions taken = management avoiding scrutiny.
 
-### 5g. Banking-specific quarterly checks (for HDFCBANK and other bank holdings)
+### 5g. Banking-specific quarterly checks (for bank / NBFC holdings)
 - **NIM (Net Interest Margin)**: QoQ bps change. Compression >10 bps = note. >20 bps = Sev-2.
 - **CASA ratio**: declining = higher cost of funds ahead.
 - **GNPA / NNPA**: absolute and ratio. Any uptick = note. Sharp uptick from a low base = Sev-2.
@@ -432,7 +425,7 @@ Locate transcript (Screener Documents tab or company IR):
 - **Credit cost**: provisions as % of average advances.
 - **CD ratio (Credit-Deposit)**: above 80% = aggressive lending. Above 85% = risk flag.
 - **PCR (Provision Coverage Ratio)**: declining = less buffer for future shocks.
-- Post-merger specifics for HDFC Bank: merged book integration, retail vs wholesale mix, branch conversion pace.
+- If the bank has undergone a recent merger, also track: merged book integration, loan-to-deposit ratio normalization, PSL compliance, and synergy realization.
 
 ### 5h. Build verdict
 - **One-line verdict**: ACCUMULATE / HOLD / WATCH / EXIT BIAS
@@ -514,7 +507,7 @@ Update `{SKILL_DIR}/state/last-run.json`:
 9. Indian markets only — NSE & BSE. All times in IST.
 10. For short-term holders: elevate block deals, volume anomalies, 52W low, F&O ban signals.
 11. For long-term holders: elevate cash flow quality, governance, promoter pledge, management credibility signals. Demote single-day price moves.
-12. NEVER ignore cash flow quality. A company reporting growing profits with declining/negative operating cash flow is the single most common pattern before Indian accounting frauds (Satyam, DHFL, IL&FS, Café Coffee Day pattern).
+12. NEVER ignore cash flow quality. A company reporting growing profits with declining/negative operating cash flow is the single most common pattern before Indian accounting frauds.
 13. For conglomerates: always do segment-level analysis. Consolidated numbers can hide a dying segment behind a thriving one.
 14. Track management guidance and hold them accountable. Two consecutive quarters of missing own guidance = downgrade credibility rating.
 

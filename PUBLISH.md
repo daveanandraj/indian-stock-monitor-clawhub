@@ -139,7 +139,7 @@ Run through these against the **live official ClawHub docs** before publishing. 
 - [ ] `tags` — verify array vs comma-string format
 - [ ] `invocation.triggers` — verify this is the correct field name and structure
 - [ ] `metadata.openclaw.requires.tools` — verify this nested structure is correct
-- [ ] `compatibility.minClaudeVersion` — verify the version naming (e.g., "opus-4-5" might be wrong format)
+- [ ] `compatibility.platforms` — verify platform names are valid
 - [ ] `compatibility.platforms` — verify platform names
 
 ## Required files
@@ -168,7 +168,7 @@ ClawHub publishes only "text-based" files (per a `textFiles.ts` allowlist). File
 - [ ] No network endpoints owned by you that could go down
 
 ## Things ClawHub may reject for that I'm not 100% certain about
-- The skill instructs Claude to use `mcp__scheduled-tasks__create_scheduled_task` and `mcp__workspace__bash`. ClawHub may require these to be declared as `optional` (we did this in `metadata.openclaw.requires.optional`) or may reject skills that require host-specific MCP tools.
+- The skill uses `mcp__scheduled-tasks__create_scheduled_task` (declared as optional). ClawHub may reject skills that require host-specific MCP tools. The `mcp__workspace__bash` tool was removed in v1.0.1.
 - The "{SKILL_DIR}" path convention I used in SKILL.md is a workaround for path portability. ClawHub may have a different convention (e.g., `${SKILL_PATH}` or relative paths).
 - Examples are included as `.md` walkthroughs. ClawHub may prefer an `examples.json` schema.
 

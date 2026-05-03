@@ -1,7 +1,7 @@
 {
   "name": "indian-stock-monitor",
   "displayName": "Indian Stock Monitor",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Institutional-grade daily watchdog for Indian equity holdings (NSE/BSE). Built on 20 years of Indian market pattern recognition. Silent by default — surfaces only Sev-1 critical events: promoter pledge liquidation, governance collapse, cash flow manipulation, surveillance moves, earnings shocks, institutional exodus. Deep quarterly analysis with segment-level drilldown and management credibility tracking.",
   "author": "daveanandraj",
   "license": "MIT-0",
@@ -46,8 +46,7 @@
   "stateDir": "state/",
   "outputDir": "alerts/",
   "compatibility": {
-    "minClaudeVersion": "opus-4-5",
-    "platforms": ["cowork", "claude-code", "claude-desktop"]
+    "platforms": ["openclaw", "claude-code", "codex", "copilot"]
   },
   "categories": ["finance", "personal-productivity", "monitoring"],
   "disclaimer": "Informational only. NOT investment advice. The author is not a SEBI-registered investment advisor. Stock investments are subject to market risk."

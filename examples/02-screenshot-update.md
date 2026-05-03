@@ -5,7 +5,7 @@ The user partially exits one holding and adds to another.
 ## User
 > sold 5 Reliance at 1350, bought 25 more HDFC Bank at 1580
 
-## Claude (using the skill)
+## Agent (using the skill)
 > ```
 > Proposed portfolio update:
 >
@@ -30,7 +30,7 @@ The user partially exits one holding and adds to another.
 ## User
 > yes, I know about the concentration
 
-## Claude
+## Agent
 > ✓ Portfolio updated. Backup saved.
 >
 > Note on the RELIANCE trim:

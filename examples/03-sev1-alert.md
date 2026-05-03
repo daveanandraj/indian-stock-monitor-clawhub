@@ -26,7 +26,7 @@ Scheduled daily scan fires.
 - Retail: 680 new stores in Q4, revenue/sqft up 4%
 - No Sev-1 triggers. Jio/Retail numbers are Sev-1 POSITIVE (logged, included since user opted in).
 
-## What the user sees in chat
+## What the user sees
 
 > 🔴 STOCK ALERT — 2026-05-01
 >

@@ -138,10 +138,7 @@
       }
     }
   },
-  "ticker_to_sector": {
-    "RELIANCE": "Conglomerate",
-    "HDFCBANK": "Private Banks"
-  },
+  "ticker_to_sector": {},
   "sector_regulators": {
     "Private Banks": ["RBI"],
     "PSU Banks": ["RBI"],

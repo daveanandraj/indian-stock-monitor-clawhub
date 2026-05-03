@@ -1,8 +1,8 @@
-# Indian Stock Monitor — A Claude Skill
+# Indian Stock Monitor
 
-An institutional-grade daily watchdog for your Indian equity holdings (NSE/BSE). Runs every weekday at 8:30 AM IST. Stays silent unless something genuinely critical happens.
+An institutional-grade daily watchdog for your Indian equity holdings (NSE/BSE). Runs every weekday morning. Stays silent unless something genuinely critical happens.
 
-> **Built by 20 years of Indian market pattern recognition.** The signals that actually destroyed retail wealth were: promoter fraud and pledge liquidation, governance collapse, cash flow manipulation hiding behind reported profits, and sector-wide regulatory shocks. This skill is weighted accordingly.
+> **Built on 20 years of Indian market pattern recognition.** The signals that actually destroyed retail wealth were: promoter fraud and pledge liquidation, governance collapse, cash flow manipulation hiding behind reported profits, and sector-wide regulatory shocks. This skill is weighted accordingly.
 
 ## What makes v2 different
 
@@ -12,12 +12,12 @@ v1 watched news and filings. v2 thinks like an experienced advisor:
 |---|---|---|
 | Promoter holding & pledge tracking | Basic pledge check | Full QoQ comparison, encumbrance tracking, insider selling detection, pledge liquidation alerts |
 | Cash flow quality analysis | Not present | CFO/PAT ratio tracking, working capital cycle, receivable/inventory divergence — catches window dressing |
-| Segment-level analysis | Not present | Conglomerate drill-down (Reliance: O2C + Jio + Retail + E&P + New Energy) |
+| Segment-level analysis | Not present | Conglomerate drill-down with per-segment peers and key metrics |
 | Management credibility | Not tracked | Guidance vs delivery scoring over quarters |
 | Portfolio health | Not present | Concentration risk, sector correlation, STCG/LTCG awareness, anchor bias detection |
 | India market calendar | Not present | RBI MPC, Budget, F&O expiry, result season awareness |
 | Positive signals | Not present | Promoter buying, buybacks, credit upgrades, contract wins |
-| Banking-specific metrics | Basic | NIM, CASA, GNPA/NNPA, slippage ratio, credit cost, CD ratio, PCR, merger integration |
+| Banking-specific metrics | Basic | NIM, CASA, GNPA/NNPA, slippage ratio, credit cost, CD ratio, PCR |
 | Severity context | Static | Peer-relative, horizon-adjusted, position-size-weighted, market-regime-aware |
 
 ## What it watches for
@@ -51,7 +51,7 @@ Say *"set up stock monitor"* and the skill walks you through:
 4. Optional daily scheduled scan
 
 ### Ongoing
-- **Update holdings**: *"I bought 10 Reliance at 1265"*, *"sold all my Wipro"*, *"trimmed 20 of HDFC Bank"*, or drop a broker screenshot
+- **Update holdings**: *"I bought 10 shares of XYZ at 1265"*, *"sold all my ABC"*, *"trimmed 20 of PQR"*, or drop a broker screenshot
 - **Manual scan**: *"check my stocks"*, *"morning brief"*, *"anything I should know?"*
 - **Portfolio health**: *"portfolio health check"*, *"how's my portfolio"*
 
@@ -59,33 +59,33 @@ Say *"set up stock monitor"* and the skill walks you through:
 On a Sev-1 hit:
 
 ```
-🔴 STOCK ALERT — 2026-05-01
+🔴 STOCK ALERT — {date}
 
-HDFCBANK — Governance red flag at the top + NIM pressure
-Severity: Sev-1 | Category: Governance | Sector: Private Banks
+{TICKER} — {one-line headline}
+Severity: Sev-1 | Category: {category} | Sector: {sector}
 
 What happened: [factual, with specific numbers]
 
-Why it matters for YOU (long-term holder, avg ₹1,607, 75 shares — 95% of portfolio):
+Why it matters for YOU ({horizon} holder, avg ₹{price}, {N} shares — {X}% of portfolio):
 - [portfolio-specific impact]
 - [historical pattern context]
 
 Suggested action: WATCH CLOSELY
 Confidence: Medium-High
-Management credibility: MEDIUM (missed NIM guidance)
+Management credibility: MEDIUM (missed guidance)
 
 Sources:
 - [Title](URL)
 
 Counter-view: [what could make this NOT critical]
 
-Portfolio impact: 95% of your capital. Extreme concentration amplifies this signal.
+Portfolio impact: {X}% of your capital.
 ```
 
 On quiet days: **nothing**. Silence is the feature.
 
 ## Supported brokers (screenshot extraction)
-Zerodha Kite, Groww, Upstox, Angel One, ICICI Direct, HDFC Securities, Kotak Neo, and most others with a clear holdings table.
+Zerodha Kite, Groww, Upstox, Angel One, ICICI Direct, Kotak Neo, and most others with a clear holdings table.
 
 ## Out of scope
 - F&O / derivatives (cash equities only)
@@ -95,14 +95,14 @@ Zerodha Kite, Groww, Upstox, Angel One, ICICI Direct, HDFC Securities, Kotak Neo
 
 ## Install
 
-### Via ClawHub
+### Via ClawHub (recommended)
 ```bash
-clawhub install daveanandraj/indian-stock-monitor
+openclaw skills install indian-stock-monitor
 ```
-Then say *"set up stock monitor"* in Claude.
+Then say *"set up stock monitor"* in any supported agent.
 
 ### Manual
-Copy this folder into your Claude skills directory and say *"set up stock monitor"*.
+Copy this folder into your agent's skills directory and say *"set up stock monitor"*.
 
 ## Files
 
@@ -116,7 +116,7 @@ Copy this folder into your Claude skills directory and say *"set up stock monito
 | `manifest.json` | Skill metadata |
 | `state/last-run.json` | Alert history, guidance tracker, suppression log |
 | `alerts/` | Archived alerts |
-| `examples/` | Worked examples with Reliance + HDFC Bank |
+| `examples/` | Worked example scenarios |
 
 ## Disclaimer
 **This skill is informational only and is NOT investment advice.** It surfaces signals against a transparent rubric you can read and customise. All buy/sell decisions are yours. The author is not a SEBI-registered investment advisor. Stock investments are subject to market risk. Past performance is not indicative of future returns.

@@ -4,6 +4,16 @@ All notable changes to this skill are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this skill adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.0] — 2026-05-03
+
+### Changed
+- Removed all agent-specific references — skill is now fully agent-agnostic (works with OpenClaw, Claude Code, Codex, Copilot)
+- Removed hardcoded stock names from methodology — SKILL.md uses generic placeholders; specific stocks are reference data in competitors.json only
+- Updated install instructions to follow ClawHub conventions (`openclaw skills install`)
+- Compatibility section now lists platforms generically instead of version-pinning to a specific LLM
+- Examples use "Agent" instead of model-specific names
+- Emptied ticker_to_sector for clean first-run state
+
 ## [2.0.0] — 2026-05-03
 
 ### Added — Methodology overhaul based on 20-year Indian market advisor perspective

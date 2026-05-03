@@ -5,7 +5,7 @@ A new user installs the skill and sets up monitoring for two holdings.
 ## User
 > set up stock monitor
 
-## Claude (using the skill)
+## Agent (using the skill)
 > Welcome. Here's what this skill does in a nutshell:
 >
 > 1. It watches your Indian stocks every weekday morning.
@@ -22,7 +22,7 @@ A new user installs the skill and sets up monitoring for two holdings.
 ## User
 > 10 Reliance at avg 1265, 50 HDFC Bank at avg 1620
 
-## Claude
+## Agent
 > ```
 > Proposed portfolio update:
 >
@@ -41,7 +41,7 @@ A new user installs the skill and sets up monitoring for two holdings.
 ## User
 > yes
 
-## Claude
+## Agent
 > ✓ Portfolio updated. Backup saved.
 >
 > A few setup questions:
@@ -54,7 +54,7 @@ A new user installs the skill and sets up monitoring for two holdings.
 ## User
 > long-term, critical only, yes for positive signals, yes for daily
 
-## Claude
+## Agent
 > ✓ Preferences saved: long-term horizon, critical-only alerts, positive signals enabled.
 > ✓ Daily scan scheduled — Mon–Fri at 8:30 AM IST.
 >
