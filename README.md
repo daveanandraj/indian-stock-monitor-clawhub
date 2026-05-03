@@ -97,7 +97,7 @@ Zerodha Kite, Groww, Upstox, Angel One, ICICI Direct, Kotak Neo, and most others
 
 ### Via ClawHub (recommended)
 ```bash
-openclaw skills install ai-stock-watchdog
+openclaw skills install indian-stock-monitor
 ```
 Then say *"set up stock monitor"* in any supported agent.
 

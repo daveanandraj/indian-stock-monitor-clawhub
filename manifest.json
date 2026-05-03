@@ -1,7 +1,7 @@
 {
-  "name": "ai-stock-watchdog",
+  "name": "indian-stock-monitor",
   "displayName": "AI stock watchdog",
-  "version": "2.1.5",
+  "version": "2.2.0",
   "description": "Daily monitoring for Indian equity holdings (NSE/BSE) using a documented severity rubric. Silent by default — surfaces Sev-1 events only. Quarterly checks, conglomerate segment view, guidance tracking. Informational only.",
   "author": "daveanandraj",
   "license": "MIT-0",

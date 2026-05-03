@@ -4,24 +4,12 @@ All notable changes to this skill are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this skill adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [2.1.5] — 2026-05-03
+## [2.2.0] — 2026-05-04
 
 ### Changed
-- ClawHub listing title: publish must pass `--name "AI stock watchdog"` (CLI derives the card title from the folder name when `--name` is omitted; `SKILL.md` `displayName` is not sent by `clawhub publish`)
-
-## [2.1.4] — 2026-05-03
-
-### Changed
-- ClawHub republish: `displayName` / `name` / `slug` in `SKILL.md` and `manifest.json` now match the **AI stock watchdog** listing
-
-## [2.1.3] — 2026-05-03
-
-_No functional changes — version bump to match ClawHub registry after republish._
-
-## [2.1.2] — 2026-05-03
-
-### Changed
-- Renamed skill to **AI stock watchdog** (`ai-stock-watchdog` slug) across metadata, docs, and LICENSE
+- Display name updated to **AI stock watchdog** on ClawHub listing (slug remains `indian-stock-monitor`)
+- All user-facing references (README, SKILL.md heading, severity-rubric, sources, LICENSE, data file comments) updated to "AI stock watchdog"
+- Removed mistakenly created separate `ai-stock-watchdog` skill from ClawHub
 
 ## [2.1.1] — 2026-05-03
 

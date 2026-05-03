@@ -1,9 +1,9 @@
 ---
-name: ai-stock-watchdog
-slug: ai-stock-watchdog
+name: indian-stock-monitor
+slug: indian-stock-monitor
 displayName: AI stock watchdog
 description: "Daily monitoring for Indian equity holdings (NSE/BSE) using a documented severity rubric. Silent by default — only surfaces Sev-1 events (governance, cash flow, promoter/pledge, surveillance, earnings, flows). Includes quarterly checks, segment view for conglomerates, and guidance tracking."
-version: 2.1.5
+version: 2.2.0
 type: skill
 license: MIT-0
 author: daveanandraj
