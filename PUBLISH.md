@@ -76,10 +76,19 @@ git push origin v1.0.0
 
 CLI v0.8.0 takes a single positional path argument plus required flags. **Note**: even though `SKILL.md` has `version: 1.0.0` in its frontmatter, CLI v0.8.0 still requires `--version` as an explicit flag.
 
+**Listing title on clawhub.ai:** The CLI sets the skill card title from **`--name`**, or else from **`TitleCase(folder basename)`**. It does **not** read `displayName` from `SKILL.md`. This repo folder is `indian-stock-monitor-clawhub`, so omitting `--name` produces the wrong title (“Indian Stock Monitor Clawhub”). Always pass:
+
+`--slug ai-stock-watchdog --name "AI stock watchdog"`
+
 ```bash
 cd "indian-stock-monitor-clawhub"
-clawhub publish . --version 1.0.0
+clawhub publish "$(pwd)" \
+  --slug ai-stock-watchdog \
+  --name "AI stock watchdog" \
+  --version 1.0.0
 ```
+
+Use `$(pwd)` (absolute path) if `clawhub publish .` fails with “SKILL.md required” (known quirk with `.` in some setups).
 
 To see all flags upfront before publishing:
 ```bash
