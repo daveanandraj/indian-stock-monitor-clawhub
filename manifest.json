@@ -1,7 +1,7 @@
 {
   "name": "indian-stock-monitor",
   "displayName": "Indian Stock Monitor",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Daily intelligent watchdog for Indian equity holdings (NSE/BSE). Silent by default — only notifies on Sev-1 critical events (governance shocks, surveillance moves, credit downgrades, earnings misses, block deals, FII cuts). Conversational portfolio management via text or broker screenshot.",
   "author": "daveanandraj",
   "license": "MIT",
@@ -27,9 +27,10 @@
       "Read",
       "Write",
       "Edit",
-      "AskUserQuestion",
-      "mcp__scheduled-tasks__create_scheduled_task",
-      "mcp__workspace__bash"
+      "AskUserQuestion"
+    ],
+    "optional": [
+      "mcp__scheduled-tasks__create_scheduled_task"
     ]
   },
   "dataFiles": [

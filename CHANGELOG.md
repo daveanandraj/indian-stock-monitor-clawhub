@@ -4,6 +4,14 @@ All notable changes to this skill are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this skill adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.1] — 2026-05-03
+
+### Security
+- Removed `mcp__workspace__bash` from tool requirements — the skill never used arbitrary shell execution and it was flagged as an unnecessary attack surface
+- Moved `mcp__scheduled-tasks__create_scheduled_task` from required to optional in manifest.json (already optional in SKILL.md)
+- Added graceful fallback in onboarding when scheduled task tool is unavailable — skill works fully in manual/ad-hoc mode
+- Scoped the scheduled task tool description to clarify it only creates a time-based cron trigger, not shell access
+
 ## [1.0.0] — 2026-05-01
 
 ### Added

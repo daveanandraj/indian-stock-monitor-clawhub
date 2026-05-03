@@ -3,7 +3,7 @@ name: indian-stock-monitor
 slug: indian-stock-monitor
 displayName: Indian Stock Monitor
 description: Daily intelligent watchdog for Indian equity holdings (NSE/BSE). Silent by default — only notifies on Sev-1 critical events (governance shocks, surveillance moves, credit downgrades, large earnings misses, block deals, FII cuts). Conversational portfolio management via text or broker screenshot.
-version: 1.0.0
+version: 1.0.1
 type: skill
 license: MIT-0
 author: daveanandraj
@@ -48,7 +48,6 @@ metadata:
         - AskUserQuestion
       optional:
         - mcp__scheduled-tasks__create_scheduled_task
-        - mcp__workspace__bash
       env: []
       binaries: []
     dataFiles:
@@ -129,7 +128,10 @@ Ask three short questions (use AskUserQuestion if available):
 Save these into `portfolio.json` `preferences` block.
 
 ## Onboard-4 — Set up the daily schedule
-Offer to create a scheduled task that runs the Daily Monitoring Workflow every weekday at 8:30 AM IST. If the user agrees, use `mcp__scheduled-tasks__create_scheduled_task` with cron `30 8 * * 1-5` and a prompt that invokes this skill. If they want a different time, use that.
+Offer to set up a daily schedule that runs the Daily Monitoring Workflow every weekday at 8:30 AM IST (or the user's preferred time).
+
+- **If `mcp__scheduled-tasks__create_scheduled_task` is available**: use it with cron `30 8 * * 1-5` and a prompt that invokes this skill. This tool only creates a time-based cron trigger — it does not grant shell access or any other elevated capability.
+- **If the tool is not available**: tell the user to manually trigger the skill each morning (e.g., "check my stocks") or set up their own external reminder. The skill works perfectly in manual/ad-hoc mode without scheduled tasks.
 
 ## Onboard-5 — Optional baseline scan
 Offer: "Want me to do a quick first-look scan of your holdings now to flag anything sitting in the last 7 days?" If yes, run the Daily Monitoring Workflow once. If no, just confirm setup is done and let them go.
