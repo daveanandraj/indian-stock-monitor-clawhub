@@ -1,12 +1,12 @@
 # Indian Stock Monitor
 
-An institutional-grade daily watchdog for your Indian equity holdings (NSE/BSE). Runs every weekday morning. Stays silent unless something genuinely critical happens.
+A daily watchdog for your Indian equity holdings (NSE/BSE). Optional scheduled run; you can also trigger scans manually. Stays silent unless a **Sev-1** rule in `severity-rubric.md` fires.
 
-> **Built on 20 years of Indian market pattern recognition.** The signals that actually destroyed retail wealth were: promoter fraud and pledge liquidation, governance collapse, cash flow manipulation hiding behind reported profits, and sector-wide regulatory shocks. This skill is weighted accordingly.
+> The rubric weights governance, promoter/pledge and insider activity, cash flow quality, earnings vs consensus, surveillance, and sector regulation. It is **not** investment advice — always verify from primary sources.
 
 ## What makes v2 different
 
-v1 watched news and filings. v2 thinks like an experienced advisor:
+v1 focused on news and filings. v2 adds structured checks (see table):
 
 | Capability | v1 | v2 |
 |---|---|---|

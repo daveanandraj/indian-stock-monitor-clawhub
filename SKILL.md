@@ -2,8 +2,8 @@
 name: indian-stock-monitor
 slug: indian-stock-monitor
 displayName: Indian Stock Monitor
-description: "Institutional-grade daily watchdog for Indian equity holdings (NSE/BSE). Built on 20 years of Indian market pattern recognition. Silent by default — surfaces only Sev-1 critical events: promoter pledge liquidation, governance collapse, cash flow manipulation, surveillance moves, earnings shocks, institutional exodus. Deep quarterly analysis with cash flow quality checks, segment-level drilldown, and management credibility tracking."
-version: 2.1.0
+description: "Daily monitoring for Indian equity holdings (NSE/BSE) using a documented severity rubric. Silent by default — only surfaces Sev-1 events (governance, cash flow, promoter/pledge, surveillance, earnings, flows). Includes quarterly checks, segment view for conglomerates, and guidance tracking."
+version: 2.1.1
 type: skill
 license: MIT-0
 author: daveanandraj
@@ -72,7 +72,7 @@ disclaimer: Informational only. NOT investment advice. The author is not a SEBI-
 
 # Indian Stock Monitor v2
 
-> An institutional-grade investment watchdog skill for Indian equities, built on patterns that actually destroyed (and preserved) retail wealth over 20 years of Indian markets. Designed for **silence by default** — speaks only when something genuinely warrants your attention.
+> Daily monitoring for NSE/BSE holdings against `severity-rubric.md`. **Silence by default** — notify only when a Sev-1 rule fires or the portfolio-health rules say so. Results depend on available sources and search quality; verify material facts yourself.
 
 ## Skill directory convention
 
@@ -272,7 +272,7 @@ If current price data is available from scan:
 
 # Daily Monitoring Workflow
 
-You are an institutional-grade watchdog for Indian equities. Job: **silence by default**. Only surface when something genuinely warrants attention. False positives erode trust faster than missed noise.
+You apply this skill's rubric to Indian equities. Job: **silence by default**. Only surface when a Sev-1 trigger matches `severity-rubric.md` (plus the notify rules below). False positives erode trust faster than missed noise.
 
 ## Step 1 — Setup & portfolio health
 - Read `{SKILL_DIR}/portfolio.json`. If `_first_run: true` OR holdings empty → route to Onboarding.
@@ -317,7 +317,7 @@ Look for: results dates, board meetings, auditor changes, KMP exits, credit rati
 - `"{COMPANY_NAME}" downgrade` last 7 days
 - `"{COMPANY_NAME}" fraud whistleblower "forensic audit"` last 90 days (only if NEW)
 
-### 3c. Promoter & institutional activity (THE most predictive scan for Indian equities)
+### 3c. Promoter & institutional activity
 
 **Promoter holding & pledge (check against latest quarterly shareholding pattern):**
 - Search: `"{COMPANY_NAME}" promoter holding` or `"{TICKER}" shareholding pattern`
@@ -370,7 +370,7 @@ Classify each signal against `severity-rubric.md`. Apply context modifiers:
 
 ## Step 5 — Quarterly Deep-Dive (when results are out)
 
-This is where most retail investors get it wrong — they look only at headline PAT. A seasoned advisor checks cash flow quality, segment trends, and management credibility.
+Quarterly deep-dive should cover cash flow quality and segment trends, not only headline PAT and EPS vs consensus.
 
 ### 5a. Headline numbers
 Pull from BSE/NSE filing, Screener, or Trendlyne:

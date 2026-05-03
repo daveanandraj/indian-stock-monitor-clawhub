@@ -4,6 +4,13 @@ All notable changes to this skill are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this skill adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.1] — 2026-05-03
+
+### Changed
+- Toned down marketing language in SKILL.md, README.md, manifest.json, and severity-rubric.md (removed unverifiable claims; descriptions now state what the skill does and its limits)
+- Rubric philosophy and section headers no longer imply guaranteed predictive power
+- `sources.md`: removed named-company callouts in section titles (kept topic-based headings)
+
 ## [2.1.0] — 2026-05-03
 
 ### Changed

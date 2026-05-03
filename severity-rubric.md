@@ -2,13 +2,13 @@
 
 The skill MUST stay silent unless a Sev-1 trigger is hit. Sev-2 only lands in the optional dashboard. Sev-1 = "the user should see this within hours."
 
-**Core philosophy**: In 20 years of Indian markets, the signals that actually destroyed retail wealth were (in order): promoter fraud/pledge liquidation, governance collapse, cash flow manipulation hiding behind reported profits, and sector-wide regulatory shocks. The rubric is weighted accordingly.
+**Core philosophy**: The rubric gives high weight to promoter/pledge and insider changes, governance and regulatory action, cash flow quality vs reported profit, and sector-wide shocks. Ordering and thresholds are a design choice, not a guarantee of outcomes.
 
 ---
 
 ## Sev-1 — CRITICAL (Notify the user immediately)
 
-### A. Promoter & insider signals (highest weight — most predictive of retail wealth destruction in India)
+### A. Promoter & insider signals (high weight in this rubric)
 
 **Promoter holding decline:**
 - Promoter holding dropped >2 percentage points in latest quarterly shareholding pattern (QoQ)
@@ -226,4 +226,4 @@ Notify the user IF AND ONLY IF:
 3. Quarterly workflow concluded EXIT BIAS or WATCH on a held stock, OR
 4. Portfolio health check found concentration risk >30% in a single stock with any Sev-2+ signal on that stock.
 
-When in doubt, default to silence. False positives erode trust faster than missed Sev-2 signals. In 20 years, the investors who stayed solvent were the ones who acted on governance and cash flow signals early — not the ones chasing every brokerage downgrade.
+When in doubt, default to silence. False positives erode trust faster than missed Sev-2 signals.

@@ -1,8 +1,8 @@
 {
   "name": "indian-stock-monitor",
   "displayName": "Indian Stock Monitor",
-  "version": "2.1.0",
-  "description": "Institutional-grade daily watchdog for Indian equity holdings (NSE/BSE). Built on 20 years of Indian market pattern recognition. Silent by default — surfaces only Sev-1 critical events: promoter pledge liquidation, governance collapse, cash flow manipulation, surveillance moves, earnings shocks, institutional exodus. Deep quarterly analysis with segment-level drilldown and management credibility tracking.",
+  "version": "2.1.1",
+  "description": "Daily monitoring for Indian equity holdings (NSE/BSE) using a documented severity rubric. Silent by default — surfaces Sev-1 events only. Quarterly checks, conglomerate segment view, guidance tracking. Informational only.",
   "author": "daveanandraj",
   "license": "MIT-0",
   "homepage": "https://github.com/daveanandraj/indian-stock-monitor-clawhub",

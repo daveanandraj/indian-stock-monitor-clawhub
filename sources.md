@@ -50,7 +50,7 @@ Sources are listed in priority order within each category. When two sources conf
 - **Moneycontrol financials**: cash flow tab
 - **Annual report**: always cross-reference audited cash flow vs quarterly estimates
 
-### Segment-wise results (critical for conglomerates like Reliance, L&T, Tata)
+### Segment-wise results (use for multi-segment / conglomerate names)
 - **BSE segment results filing**: search `"{COMPANY_NAME}" segment results site:bseindia.com`
 - **Annual report segment note**: Note on segment reporting in audited financials
 - **Tijori segment view**: provides clean segment breakdown
@@ -200,7 +200,7 @@ Sources are listed in priority order within each category. When two sources conf
 - **ICRA cement reports**: quarterly
 - Key metrics: realization per tonne, cost per tonne, capacity utilization, clinker ratio
 
-### Oil & Gas (critical for Reliance)
+### Oil & Gas (refining, petchem, E&P)
 - **Singapore GRM**: proxy for India refining margins — search `Singapore GRM` weekly
 - **Brent-Dubai spread**: impacts Indian refiner margins vs global benchmarks
 - **Petchem spreads**: polymer/polyester delta — search `{product} spread Asia`
