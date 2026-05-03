@@ -106,7 +106,7 @@ clawhub sync              # publish all changed skills
 
 ## Step 5 — Verify the listing
 
-After publish completes, ClawHub will show a URL like `https://clawhub.ai/your-username/indian-stock-monitor`. Visit it and check:
+After publish completes, ClawHub will show a URL like `https://clawhub.ai/your-username/ai-stock-watchdog`. Visit it and check:
 - Description renders correctly
 - README is shown
 - Examples are visible
@@ -116,7 +116,7 @@ After publish completes, ClawHub will show a URL like `https://clawhub.ai/your-u
 ## Step 6 — Anyone can now install
 
 ```bash
-clawhub install your-username/indian-stock-monitor
+clawhub install your-username/ai-stock-watchdog
 ```
 
 …which installs into their `./skills/` directory.
@@ -181,7 +181,7 @@ ClawHub publishes only "text-based" files (per a `textFiles.ts` allowlist). File
 In late January 2026, ClawHub had to remove ~2,400 typosquatted skills that were distributing malware. The registry has since added VirusTotal scanning. Two implications:
 
 1. **Be careful what you publish under your name** — your reputation is on the line.
-2. **Use a clearly distinctive slug** — `indian-stock-monitor` is fine; avoid anything that could be confused with another popular skill.
+2. **Use a clearly distinctive slug** — `ai-stock-watchdog` is fine; avoid anything that could be confused with another popular skill.
 3. **Sign your commits and use 2FA on GitHub** — ClawHub's review checks GitHub account integrity.
 
 ---

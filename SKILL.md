@@ -1,9 +1,9 @@
 ---
-name: indian-stock-monitor
-slug: indian-stock-monitor
-displayName: Indian Stock Monitor
+name: ai-stock-watchdog
+slug: ai-stock-watchdog
+displayName: AI stock watchdog
 description: "Daily monitoring for Indian equity holdings (NSE/BSE) using a documented severity rubric. Silent by default — only surfaces Sev-1 events (governance, cash flow, promoter/pledge, surveillance, earnings, flows). Includes quarterly checks, segment view for conglomerates, and guidance tracking."
-version: 2.1.1
+version: 2.1.2
 type: skill
 license: MIT-0
 author: daveanandraj
@@ -70,7 +70,7 @@ compatibility:
 disclaimer: Informational only. NOT investment advice. The author is not a SEBI-registered investment advisor. Stock investments are subject to market risk.
 ---
 
-# Indian Stock Monitor v2
+# AI stock watchdog v2
 
 > Daily monitoring for NSE/BSE holdings against `severity-rubric.md`. **Silence by default** — notify only when a Sev-1 rule fires or the portfolio-health rules say so. Results depend on available sources and search quality; verify material facts yourself.
 

@@ -1,4 +1,4 @@
-# Severity Rubric — Indian Stock Monitor v2
+# Severity Rubric — AI stock watchdog v2
 
 The skill MUST stay silent unless a Sev-1 trigger is hit. Sev-2 only lands in the optional dashboard. Sev-1 = "the user should see this within hours."
 

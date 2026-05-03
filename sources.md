@@ -1,4 +1,4 @@
-# Data Sources — Indian Stock Monitor v2
+# Data Sources — AI stock watchdog v2
 
 Sources are listed in priority order within each category. When two sources conflict, trust regulatory/exchange filings over news, and news over social media.
 

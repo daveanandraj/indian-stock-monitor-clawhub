@@ -4,6 +4,11 @@ All notable changes to this skill are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this skill adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.2] — 2026-05-03
+
+### Changed
+- Renamed skill to **AI stock watchdog** (`ai-stock-watchdog` slug) across metadata, docs, and LICENSE
+
 ## [2.1.1] — 2026-05-03
 
 ### Changed

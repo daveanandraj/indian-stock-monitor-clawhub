@@ -1,5 +1,5 @@
 {
-  "_comment": "Sector peers, conglomerate segment mapping, and ticker-to-sector index. Managed by indian-stock-monitor skill.",
+  "_comment": "Sector peers, conglomerate segment mapping, and ticker-to-sector index. Managed by AI stock watchdog skill.",
   "sector_peers": {
     "IT Services": ["TCS", "INFY", "HCLTECH", "WIPRO", "TECHM", "LTIM", "PERSISTENT", "COFORGE", "MPHASIS"],
     "Private Banks": ["HDFCBANK", "ICICIBANK", "AXISBANK", "KOTAKBANK", "INDUSINDBK", "IDFCFIRSTB", "FEDERALBNK", "BANDHANBNK"],
