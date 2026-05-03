@@ -4,6 +4,10 @@ All notable changes to this skill are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this skill adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.3] — 2026-05-03
+
+_No functional changes — version bump to match ClawHub registry after republish._
+
 ## [2.1.2] — 2026-05-03
 
 ### Changed
