@@ -2,8 +2,8 @@
 name: indian-stock-monitor
 slug: indian-stock-monitor
 displayName: Indian Stock Monitor
-description: Daily intelligent watchdog for Indian equity holdings (NSE/BSE). Silent by default — only notifies on Sev-1 critical events (governance shocks, surveillance moves, credit downgrades, large earnings misses, block deals, FII cuts). Conversational portfolio management via text or broker screenshot.
-version: 1.0.1
+description: "Institutional-grade daily watchdog for Indian equity holdings (NSE/BSE). Built on 20 years of Indian market pattern recognition. Silent by default — surfaces only Sev-1 critical events: promoter pledge liquidation, governance collapse, cash flow manipulation, surveillance moves, earnings shocks, institutional exodus. Deep quarterly analysis with cash flow quality checks, segment-level drilldown, and management credibility tracking."
+version: 2.0.0
 type: skill
 license: MIT-0
 author: daveanandraj
@@ -20,6 +20,8 @@ tags:
   - alerts
   - earnings
   - monitoring
+  - promoter-pledge
+  - cash-flow
 invocation:
   triggers:
     - "check my stocks"
@@ -34,6 +36,8 @@ invocation:
     - "exit"
     - "set up stock monitor"
     - "scan my holdings"
+    - "portfolio health check"
+    - "how's my portfolio"
   fileTypes:
     - "image/png"
     - "image/jpeg"
@@ -63,25 +67,25 @@ compatibility:
     - claude-code
     - cowork
     - claude-desktop
-disclaimer: Informational only. NOT investment advice. The author is not a SEBI-registered investment advisor.
+disclaimer: Informational only. NOT investment advice. The author is not a SEBI-registered investment advisor. Stock investments are subject to market risk.
 ---
 
-# Indian Stock Monitor
+# Indian Stock Monitor v2
 
-> An intelligent investment-watchdog skill for Indian equities. Designed for **silence by default** — it only speaks up when something genuinely actionable happens to a stock you hold.
+> An institutional-grade investment watchdog skill for Indian equities, built on patterns that actually destroyed (and preserved) retail wealth over 20 years of Indian markets. Designed for **silence by default** — speaks only when something genuinely warrants your attention.
 
 ## Skill directory convention
 
-All data files for this skill live in the **same directory as this SKILL.md file**. Throughout this document, that directory is referred to as `{SKILL_DIR}`. When executing, resolve `{SKILL_DIR}` to the actual absolute path where you read this SKILL.md from.
+All data files live in the **same directory as this SKILL.md file**, referred to as `{SKILL_DIR}`. Resolve it to the actual absolute path at runtime.
 
-Files used:
-- `{SKILL_DIR}/portfolio.json` — user's holdings, watchlist, preferences (managed by skill, never edited by hand)
-- `{SKILL_DIR}/competitors.json` — sector → peers mapping
+Files:
+- `{SKILL_DIR}/portfolio.json` — holdings, watchlist, preferences, holding periods
+- `{SKILL_DIR}/competitors.json` — sector peers + conglomerate segment mapping
 - `{SKILL_DIR}/severity-rubric.md` — Sev-1/2/3 classification rules
-- `{SKILL_DIR}/sources.md` — data source reference
-- `{SKILL_DIR}/state/last-run.json` — persistent state (alerts already sent, results calendar, follow-ups)
+- `{SKILL_DIR}/sources.md` — data sources with search query templates
+- `{SKILL_DIR}/state/last-run.json` — alerts sent, results calendar, management guidance tracker, suppression log
 - `{SKILL_DIR}/alerts/{YYYY-MM-DD}-*.md` — archived alerts
-- `{SKILL_DIR}/state/portfolio-backup-{TS}.json` — automatic backups before every portfolio write
+- `{SKILL_DIR}/state/portfolio-backup-{TS}.json` — auto-backups
 
 ---
 
@@ -89,287 +93,438 @@ Files used:
 
 | User message contains... | Run |
 |---|---|
-| portfolio.json `_first_run: true` flag, OR user says "set up stock monitor" / "I want to start monitoring my stocks" | **Onboarding Workflow** (Onboard-1) |
-| "I bought ...", "I sold ...", "add ... to portfolio", "update my portfolio", "remove ...", "trim ...", "exit ...", or any image of a broker portfolio | **Portfolio Update Workflow** (Update-1) |
-| "check my stocks", "morning brief", "anything I should know", "scan my portfolio", scheduled daily run | **Daily Monitoring Workflow** (Step 1) |
+| portfolio.json `_first_run: true`, OR "set up stock monitor" / "start monitoring" | **Onboarding Workflow** |
+| "I bought", "I sold", "add to portfolio", "trim", "exit", "update my portfolio", broker screenshot | **Portfolio Update Workflow** |
+| "check my stocks", "morning brief", "scan", "anything I should know", scheduled run | **Daily Monitoring Workflow** |
+| "portfolio health check", "how's my portfolio", "concentration risk" | **Portfolio Health Check** (then optionally Daily Monitoring) |
 | Ambiguous | Ask the user which they want |
 
 ---
 
 # Onboarding Workflow (first run)
 
-The skill's portfolio.json starts with `_first_run: true` and empty holdings. Detect this on first invocation. NEVER assume the user wants to skip — always offer to set up.
+portfolio.json starts with `_first_run: true` and empty holdings. Detect on first invocation. NEVER skip — always offer setup.
 
 ## Onboard-1 — Greet & explain
-Greet warmly. In plain language, explain what the skill does in 3 lines:
+Greet warmly. Explain in plain language:
 1. It watches your Indian stocks every weekday morning.
-2. It ONLY pings you when something genuinely critical happens (auditor exits, surveillance moves, big earnings misses, governance issues, block deals, etc.).
-3. Most days you'll hear nothing — that's the design.
-
-Then ask if they'd like to set it up now.
+2. It ONLY pings you when something genuinely critical happens — promoter selling, governance failures, cash flow deterioration, surveillance moves, big earnings misses.
+3. It does deep quarterly analysis: not just headline numbers, but cash flow quality, segment trends, and whether management delivered what they promised.
+4. Most days you'll hear nothing — that's the design.
 
 ## Onboard-2 — Capture holdings
 Use AskUserQuestion (if available) OR ask in chat:
 
 > "How would you like to share your portfolio?"
-> 1. **Drop a screenshot** of my broker app (Zerodha Kite, Groww, Upstox, Angel One, etc.) — easiest
+> 1. **Drop a screenshot** of my broker app (Zerodha, Groww, Upstox, Angel One, etc.)
 > 2. **Describe in text** (e.g., "50 HDFC Bank at avg 1620, 10 Reliance at 2900")
-> 3. **Skip for now** — I'll come back later
+> 3. **Skip for now**
 
-Based on their choice, follow the same logic as the Update Workflow (Update-2 onwards).
+Follow Update Workflow (Update-2+) for processing.
 
 ## Onboard-3 — Capture preferences
-Ask three short questions (use AskUserQuestion if available):
-
+Ask:
 1. **Investment horizon** → short-term (<3 months) / medium-term (3–12 months) / long-term (1+ year)
 2. **Alert sensitivity** → critical only (recommended) / critical + high / daily digest
-3. **Delivery** → notify only on critical (recommended) / always send a daily one-liner / live dashboard
+3. **Delivery** → notify only on critical (recommended) / daily one-liner / live dashboard
+4. **Positive signals** → include good news in alerts? (yes / no — default no, silence-first)
 
-Save these into `portfolio.json` `preferences` block.
+Save into `portfolio.json` → `preferences`.
 
 ## Onboard-4 — Set up the daily schedule
-Offer to set up a daily schedule that runs the Daily Monitoring Workflow every weekday at 8:30 AM IST (or the user's preferred time).
+Offer daily schedule for the Daily Monitoring Workflow every weekday at 8:30 AM IST.
 
-- **If `mcp__scheduled-tasks__create_scheduled_task` is available**: use it with cron `30 8 * * 1-5` and a prompt that invokes this skill. This tool only creates a time-based cron trigger — it does not grant shell access or any other elevated capability.
-- **If the tool is not available**: tell the user to manually trigger the skill each morning (e.g., "check my stocks") or set up their own external reminder. The skill works perfectly in manual/ad-hoc mode without scheduled tasks.
+- **If `mcp__scheduled-tasks__create_scheduled_task` is available**: use it with cron `30 8 * * 1-5`. This tool only creates a time-based cron trigger — no shell access.
+- **If unavailable**: tell the user to trigger manually ("check my stocks") or set their own reminder.
 
-## Onboard-5 — Optional baseline scan
-Offer: "Want me to do a quick first-look scan of your holdings now to flag anything sitting in the last 7 days?" If yes, run the Daily Monitoring Workflow once. If no, just confirm setup is done and let them go.
+## Onboard-5 — Baseline scan
+Offer: "Want me to do a first-look scan now? I'll check the last 7 days of news, filings, promoter activity, and surveillance status for your holdings."
 
-## Onboard-6 — Mark setup complete
-Set `_first_run: false` in portfolio.json. Save. Done.
+If yes, run Daily Monitoring Workflow once. If no, confirm setup done.
+
+## Onboard-6 — Mark complete
+Set `_first_run: false` in portfolio.json. Save.
 
 ---
 
 # Portfolio Update Workflow
 
-The user does NOT edit portfolio.json by hand. You handle it. They describe changes in text OR drop a screenshot of their broker app and you parse it.
+The user never edits portfolio.json. They describe changes or drop screenshots.
 
 ## Update-1 — Detect intent
-Trigger phrases (match on intent, not exact wording):
-- **Add / Buy**: "I bought 50 HDFC at 1620", "add Reliance, 10 shares, avg 2900", "picked up TCS today"
-- **Sell / Trim / Exit**: "sold all my Infy", "trimmed 20 of TCS", "exited Wipro", "booked profit on ITC"
-- **Bulk update**: "here's my portfolio" + screenshot, "update my holdings"
-- **Watchlist**: "add Tata Motors to watchlist", "remove SBIN from watchlist"
-- **Correction**: "my avg price for HDFC is actually 1640, not 1620"
+- **Buy**: "I bought 50 HDFC at 1620", "picked up Reliance today"
+- **Sell / Trim / Exit**: "sold all my Infy", "trimmed 20 of TCS", "booked profit on ITC"
+- **Bulk update**: screenshot + "update my holdings"
+- **Watchlist**: "add Tata Motors to watchlist"
+- **Correction**: "my avg for HDFC is actually 1640"
 
 ## Update-2 — Gather information
 
-### If user provided a screenshot (image attached)
-Read the image directly using vision. Extract: ticker (or company name → resolve to NSE ticker), quantity, average buy price. Note the broker if visible.
+### Screenshot path
+Read image using vision. Extract: ticker/company name, quantity, average buy price, broker.
 
-Common broker layouts:
-- **Zerodha Kite** Holdings tab — Instrument | Qty. | Avg. cost | LTP | Cur. val | P&L
-- **Groww** Stocks tab — ticker, qty, "Avg. ₹X", "Invested ₹Y"
-- **Upstox / Angel One / ICICI Direct / HDFC Sec / Kotak Neo** — similar tabular format
+Common layouts:
+- **Zerodha Kite**: Instrument | Qty | Avg. cost | LTP | Cur. val | P&L
+- **Groww**: ticker, qty, "Avg. ₹X", "Invested ₹Y"
+- **Upstox / Angel One / ICICI Direct / HDFC Sec / Kotak Neo**: similar tabular
 
-If the screenshot is unclear or partially visible, ask the user to re-upload or fill in gaps in text. Don't guess.
+**CRUCIAL**: Before computing diff, ASK: *"Is this your complete portfolio, or just additions/changes?"* Default: layer onto existing. Never silently remove based on absence.
 
-**CRUCIAL — full vs partial screenshot ambiguity**: Before computing the diff, ASK: *"Is this your complete portfolio (so I should remove anything held but not shown), or just additions/changes to layer onto your existing holdings?"* Default behaviour: layer onto existing — never silently remove holdings based on absence from a screenshot.
+If truncated (scroll indicator, "+N more"), ask to scroll and re-upload.
 
-If the screenshot looks truncated (scroll indicator visible, "+N more" text), tell the user it looks partial and ask them to scroll & re-upload.
-
-### If user provided text only
+### Text path
 Parse natural language:
-- Extract: action (buy/sell/trim/exit/correction/watchlist), ticker or company name, quantity, price.
-- Resolve company name → NSE ticker. If ambiguous (e.g., "Tata"), ASK before guessing.
-- "all" / "exited" → full sell.
-- "trimmed 20" / "sold 20" → subtract from current.
-- "I now hold 30" → set, don't add.
-- If price missing on a buy, ASK. Don't fabricate.
+- Resolve company name → NSE ticker. If ambiguous, ASK. Common disambiguations:
+  - Tata → TCS / TATAMOTORS / TATASTEEL / TATAPOWER / TATACONSUM
+  - HDFC → HDFCBANK / HDFCLIFE / HDFCAMC
+  - Bajaj → BAJFINANCE / BAJAJFINSV / BAJAJ-AUTO
+  - Reliance → RELIANCE (single listed entity, but note conglomerate segments)
+  - Adani → ADANIENT / ADANIPORTS / ADANIPOWER / ADANIGREEN / AWL / ATGL
+- "all" / "exited" → full sell
+- "trimmed 20" → subtract from current
+- "I now hold 30" → set, don't add
+- Missing price on buy → ASK. Never fabricate.
 
-### Sector inference (when adding a new ticker)
-1. Look up in `competitors.json` → `ticker_to_sector`. If found, use it.
-2. If not found, check `sector_peers` for the ticker.
-3. If still not found, web search ("{TICKER} NSE sector") OR ask the user. Then ADD the mapping to `competitors.json`.
-4. Never leave `sector` blank.
+### Sector & segment inference (when adding a new ticker)
+1. Look up `competitors.json` → `ticker_to_sector`. If found, use it.
+2. If not found, check `sector_peers`.
+3. If still not found, web search "{TICKER} NSE sector industry".
+4. For conglomerates (RELIANCE, LT, ITC, GRASIM, ADANIENT), also check `conglomerate_segments` in competitors.json and note the segment mapping.
+5. ADD the mapping to `competitors.json`. Never leave sector blank.
+
+### Record holding start date
+When adding a new stock, record `buy_date: "{YYYY-MM-DD}"` in portfolio.json. This is used for:
+- STCG vs LTCG awareness (365-day boundary for equity)
+- Holding period context in alerts
 
 ## Update-3 — Read current portfolio
-Read `{SKILL_DIR}/portfolio.json`. Compute proposed new state in memory.
+Read `{SKILL_DIR}/portfolio.json`. Compute proposed new state.
 
 ## Update-4 — Show diff & confirm (mandatory)
-NEVER write portfolio.json without explicit user confirmation. Show a clear diff:
+NEVER write without explicit confirmation:
 
 ```
 Proposed portfolio update:
 
-  ✱ ADD     HDFCBANK   qty: 50      avg: ₹1,620   sector: Private Banks
-  ✏ UPDATE  TCS        qty: 30 → 10 (sold 20)     avg: ₹3,450 (unchanged)
+  ✱ ADD     RELIANCE   qty: 10     avg: ₹2,900   sector: Conglomerate (O2C + Digital + Retail)
+  ✏ UPDATE  HDFCBANK   qty: 50→75  avg: ₹1,620→₹1,607 (weighted)
   ✗ REMOVE  WIPRO      (full exit)
 
-Summary: +1 new holding, 1 trim, 1 exit. Net 6 holdings after.
+  Concentration check: RELIANCE would be 28% of portfolio — within limits.
 
-Apply these changes? (yes / no / edit)
+Summary: +1 new, 1 increased, 1 exit. Net 2 holdings.
+
+Apply? (yes / no / edit)
 ```
 
-Wait for explicit "yes" / "confirm" / "apply". If "edit", adjust and re-show diff.
+Wait for explicit confirmation.
 
 ## Update-5 — Backup, then write
-On confirmation:
-1. Copy current `portfolio.json` to `{SKILL_DIR}/state/portfolio-backup-{YYYY-MM-DD-HHMMSS}.json`.
-2. Write new `portfolio.json` preserving structure.
-3. If a new ticker was added, update `competitors.json` → `ticker_to_sector`.
-4. Confirm: "✓ Portfolio updated. {N} holdings, {M} on watchlist. Backup saved."
+1. Copy current portfolio.json to `{SKILL_DIR}/state/portfolio-backup-{YYYY-MM-DD-HHMMSS}.json`
+2. Write new portfolio.json preserving structure
+3. Update `competitors.json` → `ticker_to_sector` for new tickers
+4. Confirm: "Portfolio updated. {N} holdings, {M} on watchlist. Backup saved."
 
-## Update-6 — Average price math (when adding to existing holding)
-Weighted average:
+## Update-6 — Weighted average (adding to existing)
 ```
-new_avg = ((old_qty × old_avg) + (new_qty × new_buy_price)) / (old_qty + new_qty)
-new_qty_total = old_qty + new_qty
+new_avg = ((old_qty × old_avg) + (new_qty × new_price)) / (old_qty + new_qty)
 ```
-Show the calculation in the diff.
-
-If user states a new average explicitly ("my new avg is X"), use their number.
+Show the calculation. If user states explicit avg, use theirs.
 
 ## Update-7 — Edge cases
-- **Partial sell to zero**: REMOVE the holding entirely.
-- **Selling more than held**: stop, ask. Don't allow negative qty.
-- **Selling a stock not in portfolio**: stop, ask.
-- **Stock split / bonus**: adjust qty × ratio, avg ÷ ratio. CONFIRM before applying.
-- **Renamed/merged tickers**: confirm with user; never assume.
-- **F&O positions**: not supported — tell the user (cash equities only).
-- **Mutual funds / ETFs**: not supported.
-- **Buying without a price**: ASK for it. Don't substitute LTP.
-- **Ticker disambiguation**: list candidates and ask. Examples: Tata → TCS / TATAMOTORS / TATASTEEL / TATAPOWER / TATACONSUM / TATACHEM. HDFC → HDFCBANK / HDFCLIFE / HDFCAMC. Bajaj → BAJFINANCE / BAJAJFINSV / BAJAJ-AUTO / BAJAJHLDNG.
+- **Sell to zero**: REMOVE entirely.
+- **Sell more than held**: STOP, ask.
+- **Sell stock not in portfolio**: STOP, ask.
+- **Stock split / bonus**: adjust qty × ratio, avg ÷ ratio. CONFIRM.
+- **Renamed/merged tickers**: confirm with user.
+- **F&O / MF / ETF**: not supported — tell user.
+- **Buy without price**: ASK.
 
-## Update-8 — Acknowledge & offer next step
-After write, if meaningful change (new sector entered, large addition, full exit), offer:
-- New holding → "Want a quick first-look scan of {TICKER} now?"
-- New sector → "I've added {sector} peers to monitoring."
-- Full exit → just confirm, no next step.
+## Update-8 — Post-update offer
+- New holding → "Want a quick first-look scan of {TICKER}?"
+- New sector → "Added {sector} peers to monitoring."
+- Full exit → confirm only. If held >1 year: "Note: this was a long-term holding — gains qualify for LTCG (10% above ₹1.25 lakh)."
+
+---
+
+# Portfolio Health Check
+
+Run this before daily monitoring OR when user asks "how's my portfolio" / "portfolio health check". This catches structural risks the daily scan doesn't.
+
+## Health-1 — Concentration risk
+- Any single stock >30% of invested value → FLAG as concentration risk
+- Any single sector >40% of invested value → FLAG as sector overweight
+- Report: "Your portfolio has {N} holdings across {M} sectors. Largest position: {TICKER} at {X}% of invested value."
+
+## Health-2 — Correlation check
+- If 3+ holdings in same sector (e.g., HDFCBANK + ICICIBANK + KOTAKBANK), note: "You have high banking sector correlation. A sector-wide event (RBI policy, NPA cycle) would hit {X}% of your portfolio."
+- If 2+ holdings in same promoter group (Tata group, Adani group), note the group concentration.
+
+## Health-3 — Liquidity check
+- If any held stock has average daily volume <₹5 crore, flag: "Exit may be difficult for {TICKER} — average daily volume is only ₹{X} crore."
+
+## Health-4 — Holding period tracker
+- For each stock, compute days held since `buy_date`.
+- Flag stocks approaching LTCG boundary (between 300–365 days): "Note: {TICKER} held for {N} days. LTCG threshold in {365-N} days — trimming before would mean STCG (20%)."
+- Stocks held >365 days: note "LTCG eligible" in any exit recommendations.
+
+## Health-5 — Unrealized P&L awareness
+If current price data is available from scan:
+- Flag stocks with >30% unrealized loss held >180 days: "You're sitting on a {X}% unrealized loss on {TICKER} for {N} days. This may be anchoring bias."
+- Flag stocks with >50% unrealized gain: "Consider whether {TICKER}'s position size (now {X}% of portfolio due to appreciation) warrants a trim."
 
 ---
 
 # Daily Monitoring Workflow
 
-You are an intelligent investment advisor for Indian equities. Job: **silence by default**. Only ping the user when something genuinely actionable shows up. False positives erode trust faster than missed Sev-2 noise.
+You are an institutional-grade watchdog for Indian equities. Job: **silence by default**. Only surface when something genuinely warrants attention. False positives erode trust faster than missed noise.
 
-## Step 1 — Setup
-- Read `{SKILL_DIR}/portfolio.json`. If `_first_run: true` OR holdings is empty, route to Onboarding Workflow instead. Do NOT silently exit.
+## Step 1 — Setup & portfolio health
+- Read `{SKILL_DIR}/portfolio.json`. If `_first_run: true` OR holdings empty → route to Onboarding.
 - Pull every ticker in `holdings`.
-- Look up each ticker's sector in `competitors.json`. Build the peer set.
-- Read `{SKILL_DIR}/state/last-run.json` for what's already been alerted.
+- Look up each ticker's sector and segment mapping in `competitors.json`. Build peer set.
+- Read `{SKILL_DIR}/state/last-run.json` for alert history and management guidance tracker.
 - Note today's date in IST.
+- Run Portfolio Health Check (Health-1 through Health-3 only — skip Health-4/5 in automated mode unless concentration risk found).
 
-## Step 2 — Pre-market global cues (one quick pass, NOT per-stock)
-Quick web search for: US close (Dow / Nasdaq / S&P 500), GIFT Nifty / SGX Nifty, Brent crude, USD/INR, any Asian market shock.
+## Step 2 — India market calendar check
+Before stock-level scanning, check:
 
-Only flag if a global shock could directly hit a held name (crude up 5% with HPCL/BPCL → margin pressure flag; USD/INR sharp move with TCS/Infy → tailwind/headwind).
+### 2a. Is today a market holiday?
+If NSE is closed today (Republic Day, Holi, Diwali, etc.), skip the scan. Update state with "market_holiday" and exit.
+
+### 2b. Macro events today/this week
+Quick search for:
+- RBI MPC decision (if this is an MPC week) → impacts all bank/NBFC holdings
+- Union Budget (if Feb 1 window) → impacts everything
+- GST Council meeting → impacts FMCG, cement, auto
+- F&O monthly expiry (last Thursday) → note elevated volatility context
+
+### 2c. Pre-market global cues
+Search: US close (Dow/Nasdaq/S&P), GIFT Nifty, Brent crude, USD/INR, US 10Y yield, India VIX.
+
+Only flag if global shock directly maps to a holding:
+- Crude up >5% with ONGC/IOC/BPCL/HPCL held → flag
+- Crude up >5% with Reliance held → mixed (GRM benefits but petchem margin pressure) — note nuance
+- USD/INR sharp move (>1%) with IT stocks → flag tailwind/headwind
+- US 10Y yield spike >20bps → FII outflow risk, flag for all holdings
 
 ## Step 3 — Per-stock daily scan
-For each held ticker, run these in parallel where possible:
+For each held ticker, run in parallel:
 
 ### 3a. Exchange announcements (last 24h)
-Search: `site:nseindia.com {COMPANY_NAME} announcement` last 1 day; `site:bseindia.com {COMPANY_NAME}` last 1 day.
-Look for: results dates, board meetings, auditor changes, KMP changes, credit rating updates, pledge disclosures, SAST/PIT, litigation, plant disruptions.
+Search: `site:nseindia.com "{COMPANY_NAME}" announcement`, `site:bseindia.com "{COMPANY_NAME}"`.
+Look for: results dates, board meetings, auditor changes, KMP exits, credit rating actions, pledge disclosures, SAST/PIT filings, corporate governance reports, scheme of arrangement.
 
 ### 3b. News scan (last 24h)
-- `{COMPANY_NAME} news` filtered to last 1 day, prefer Moneycontrol / ET / Reuters / Mint / Business Standard
-- `{COMPANY_NAME} SEBI` (last 7 days)
-- `{COMPANY_NAME} CBI ED IT raid` (last 30 days, only flag if NEW)
-- `{COMPANY_NAME} downgrade` (last 7 days, brokerage or rating agency)
+- `"{COMPANY_NAME}" news` last 1 day — prefer Moneycontrol / ET / Reuters / Mint / Business Standard
+- `"{COMPANY_NAME}" SEBI` last 7 days
+- `"{COMPANY_NAME}" ED CBI "income tax" raid` last 30 days (only if NEW)
+- `"{COMPANY_NAME}" downgrade` last 7 days
+- `"{COMPANY_NAME}" fraud whistleblower "forensic audit"` last 90 days (only if NEW)
 
-### 3c. Surveillance & price action
-- GSM/ASM check (cache 7 days).
-- 52-week low yesterday?
-- Block/bulk deals (NSE bulk deals page).
-- Volume vs 20-day avg? Flag if >3x with negative move.
+### 3c. Promoter & institutional activity (THE most predictive scan for Indian equities)
 
-### 3d. Sector / peer activity (last 24h, per sector)
-For each unique sector across holdings: did any peer announce results / guidance / material news? Did any sector regulator (RBI, USFDA, GST council, etc.) issue something? Cross-map peer concerns to held names — 2+ peer Sev-1 in 7 days = industry stress trigger.
+**Promoter holding & pledge (check against latest quarterly shareholding pattern):**
+- Search: `"{COMPANY_NAME}" promoter holding` or `"{TICKER}" shareholding pattern`
+- Compare with previous quarter stored in state. Flag per severity-rubric.md Section A.
+- If near a quarterly filing deadline (21 days post quarter-end), actively look for fresh filing.
 
-### 3e. Upcoming results check
-- Has the company announced its next results date? Track it.
-- If results were declared in last 24h → trigger Quarterly Workflow (Step 5).
+**Insider trading disclosures (last 7 days):**
+- Search: `"{TICKER}" insider trading SAST PIT disclosure site:nseindia.com`
+- Flag KMP sales, especially pre-results.
+
+**Block/bulk deals (last 24h):**
+- Search: `"{TICKER}" block deal bulk deal`
+- Decode: is the seller a promoter entity, FII, PE fund, or retail? Promoter selling = Sev-1.
+
+**FII/MF holding changes (when quarterly data available):**
+- Compare latest quarter vs previous from Trendlyne or Screener.
+- FII cut >2pp = Sev-1. MF net selling >0.5% = Sev-2.
+
+### 3d. Surveillance & price action
+- GSM/ASM status: search `"{TICKER}" GSM ASM surveillance`. Cache 7 days.
+- F&O ban list (if near expiry week): check NSE F&O ban page.
+- 52-week low yesterday? Flag if on >2x average volume.
+- Volume vs 20-day average — flag if >3x with negative move.
+
+### 3e. Sector & peer activity (per unique sector, last 24h)
+For each sector:
+- Did any peer announce results, guidance, or material news?
+- Did a sector regulator issue anything? (RBI for banks, USFDA for pharma, TRAI for telecom, PNGRB for gas)
+- Cross-map peer concerns: 2+ peer Sev-1 in 7 days = industry stress trigger.
+
+### 3f. Upcoming results check
+- Has the company announced next results date? Track in `state/last-run.json → results_calendar`.
+- If results declared in last 24h → trigger Quarterly Deep-Dive (Step 5).
+- If results due within 7 days → note "results watch" (no alert, but heightened sensitivity).
+
+### 3g. Conglomerate segment check (for multi-business companies)
+If the ticker is flagged as a conglomerate in `competitors.json → conglomerate_segments`:
+- Search for segment-specific news. For RELIANCE: O2C/refining margins (Singapore GRM), Jio subscriber/ARPU data, Retail store expansion/revenue, New Energy capex updates.
+- For L&T: infrastructure order book, IT services (LTIMindtree), financial services.
+- A segment turning loss-making or cross-subsidy pattern = Sev-1.
 
 ## Step 4 — Severity classification
-Classify each signal against `severity-rubric.md`. Default to silence. Only Sev-1 surfaces.
+Classify each signal against `severity-rubric.md`. Apply context modifiers:
+- Peer-relative adjustment (sector-wide fall reduces individual severity)
+- Horizon adjustment (short-term → elevate price triggers; long-term → demote price, elevate fundamental)
+- Position size adjustment (>25% of portfolio → elevate Sev-2 to Sev-1)
+- Market regime adjustment (broad correction → raise price thresholds)
 
-**Suppression rule**: If you've already alerted on the same `signal_id` in the last 14 days, suppress.
+**Suppression rule**: If already alerted on same `signal_id` in last 14 days, suppress.
 
-## Step 5 — Quarterly Workflow (only when results are out)
-Triggered when Step 3e finds new results published.
+## Step 5 — Quarterly Deep-Dive (when results are out)
 
-For the held stock:
-1. Pull results PDF from BSE/NSE/company IR or Screener.
-2. Compare vs previous quarter and same quarter last year:
-   - Revenue YoY/QoQ %
-   - EBITDA margin (bps change)
-   - PAT YoY/QoQ %
-   - Net debt change
-   - Working capital days
-   - Receivables and inventory growth vs revenue growth
-3. Vs consensus: pull from Trendlyne / Moneycontrol; flag misses >10% (Sev-2) or >25% (Sev-1).
-4. Concall: locate transcript on Screener "Documents" or company IR. Compare with last 2 transcripts. Look for: guidance change, tone shift on demand, capex revisions, margin guidance, order book trend, new risks called out.
-5. Build a verdict:
-   - **One-line verdict**: HOLD / WATCH / EXIT BIAS
-   - **Why** (3 bullets max)
-   - **Counter-view** (1 bullet)
-   - **Action**: what user should do this week
+This is where most retail investors get it wrong — they look only at headline PAT. A seasoned advisor checks cash flow quality, segment trends, and management credibility.
 
-## Step 6 — Quarterly Workflow for peers
-Same as Step 5 but for peer results. Output: one paragraph per peer (QoQ delta + concall tone) and one sector-level read: "Industry trend looks {strong / mixed / weak / deteriorating}." Surface ONLY if it changes the read on a held stock.
+### 5a. Headline numbers
+Pull from BSE/NSE filing, Screener, or Trendlyne:
+- Revenue: YoY %, QoQ %
+- EBITDA: absolute, margin (bps change QoQ and YoY)
+- PAT: YoY %, QoQ %
+- EPS vs consensus
+
+### 5b. Cash flow quality check (most underrated — catches manipulation)
+Pull cash flow statement (Screener cash flow tab or filing):
+- **CFO vs PAT**: compute CFO/PAT ratio. Below 0.5x for 2+ quarters = Sev-1.
+- **CFO trend**: is CFO growing in line with PAT? If PAT up 20% but CFO flat = red flag.
+- **Free cash flow**: CFO minus capex. Negative FCF for 3+ quarters in a non-capex-cycle company = Sev-2.
+- **Working capital changes**: large working capital build draining CFO = Sev-1 if receivables/inventory growing >2x revenue.
+
+### 5c. Balance sheet quality
+- **Net debt**: QoQ change. Debt increasing while profits grow = fund-flow mismatch.
+- **Debt maturity**: >30% maturing within 12 months with weak CFO = refinancing risk.
+- **Interest coverage**: EBITDA/interest expense. Below 1.5x = Sev-1.
+- **Contingent liabilities**: compare vs previous year. Sharp jump = potential hidden risk.
+- **Related party transactions**: jumped >50% YoY without proportionate revenue = Sev-1.
+- **Trade receivables**: absolute growth and days outstanding. Over 90 days = collection risk.
+- **Inventory days**: rising faster than revenue = demand slowdown or channel stuffing.
+
+### 5d. Segment-wise analysis (critical for conglomerates)
+For companies with multiple reported segments:
+- Revenue and EBIT per segment vs previous quarter and same quarter last year.
+- Any segment turned EBIT-negative? → Sev-1.
+- Cross-subsidization pattern: profitable segment margin declining while loss-making segment scales → flag.
+- For **Reliance**: O2C (refining + petchem), Digital Services (Jio), Retail, Oil & Gas (E&P), New Energy.
+- For **HDFC Bank** post-merger: Retail Banking, Wholesale Banking, Treasury, Other Banking.
+
+### 5e. Vs consensus
+Pull consensus from Trendlyne or Moneycontrol:
+- Revenue miss >15% = Sev-1. Miss 10–15% = Sev-2.
+- PAT miss >25% = Sev-1. Miss 15–25% = Sev-2.
+- Margin miss >200 bps = Sev-2. Miss >400 bps = Sev-1.
+
+### 5f. Concall analysis
+Locate transcript (Screener Documents tab or company IR):
+1. **Guidance tracking**: what did management guide last quarter? Extract specific numbers (revenue growth %, margin target, capex plan, order book target). Compare with actuals. If missed >30% of guided number → management credibility drops. Record in `state/last-run.json → guidance_tracker`.
+2. **Forward guidance**: extract new guidance numbers. Store for next quarter comparison.
+3. **Tone analysis**: compare language with previous 2 concalls. "Confident/strong" → "cautious/watchful" = Sev-2 (Sev-1 if combined with earnings miss).
+4. **Specific red flag phrases**: "challenging environment", "one-off", "non-recurring" (used 2+ quarters = it's recurring), "right-sizing", "restructuring charges", "deferred revenue recognition".
+5. **Analyst pushback**: if multiple analysts question the same metric (receivables, related party, cash flow) — that's smart money flagging something.
+6. **Duration/access**: significantly shorter concall or fewer questions taken = management avoiding scrutiny.
+
+### 5g. Banking-specific quarterly checks (for HDFCBANK and other bank holdings)
+- **NIM (Net Interest Margin)**: QoQ bps change. Compression >10 bps = note. >20 bps = Sev-2.
+- **CASA ratio**: declining = higher cost of funds ahead.
+- **GNPA / NNPA**: absolute and ratio. Any uptick = note. Sharp uptick from a low base = Sev-2.
+- **Slippage ratio**: fresh slippages as % of opening standard advances. Rising = Sev-2.
+- **Credit cost**: provisions as % of average advances.
+- **CD ratio (Credit-Deposit)**: above 80% = aggressive lending. Above 85% = risk flag.
+- **PCR (Provision Coverage Ratio)**: declining = less buffer for future shocks.
+- Post-merger specifics for HDFC Bank: merged book integration, retail vs wholesale mix, branch conversion pace.
+
+### 5h. Build verdict
+- **One-line verdict**: ACCUMULATE / HOLD / WATCH / EXIT BIAS
+- **Why** (3 bullets max)
+- **Counter-view** (1 bullet — always include)
+- **Action**: specific for this week, based on user's horizon
+- **Management credibility**: HIGH / MEDIUM / LOW (based on guidance delivery history)
+
+## Step 6 — Quarterly for peers
+Same as Step 5 but summarized: one paragraph per peer (QoQ delta + concall tone). Sector-level read: "Industry trend: {strong / mixed / weak / deteriorating}."
+
+Surface ONLY if it changes the read on a held stock.
 
 ## Step 7 — Decide whether to notify
 Notify only if:
-- ≥1 Sev-1 trigger fired on a held stock not flagged in last 14 days, OR
-- ≥2 Sev-1 triggers across peers in same sector within 7 days (industry stress), OR
-- Quarterly workflow concluded EXIT BIAS or WATCH on a held stock.
+1. ≥1 Sev-1 trigger on a held stock not flagged in last 14 days, OR
+2. ≥2 Sev-1 triggers across peers in same sector within 7 days (industry stress), OR
+3. Quarterly deep-dive concluded EXIT BIAS or WATCH, OR
+4. Portfolio health found >30% concentration in a stock with any Sev-2+ signal.
 
-Otherwise — produce nothing in chat. Just update state and exit.
+Otherwise — update state and exit silently.
 
-EXCEPTION: if user's `delivery` preference is `daily_brief`, always post a one-liner ("All clear — no Sev-1 across {N} holdings as of {time}.").
+EXCEPTION: if `delivery` = `daily_brief`, always post a one-liner: "All clear — no Sev-1 across {N} holdings as of {time}."
 
-## Step 8 — Notification format (when notifying)
-Save at `{SKILL_DIR}/alerts/{YYYY-MM-DD}-alert.md` AND surface in chat:
+## Step 8 — Notification format
+Save to `{SKILL_DIR}/alerts/{YYYY-MM-DD}-alert.md` AND surface in chat:
 
 ```
 🔴 STOCK ALERT — {date}
 
 {TICKER} — {one-line headline}
-Severity: Sev-1 | Sector: {sector}
+Severity: Sev-1 | Category: {rubric section} | Sector: {sector}
 
-What happened: {2-3 lines, factual}
+What happened:
+{2-3 lines, factual, with specific numbers}
 
-Why it matters for YOU ({horizon} holder):
-- {bullet 1}
-- {bullet 2}
+Why it matters for YOU ({horizon} holder, avg ₹{avg_price}, {N} shares):
+- {bullet 1 — direct portfolio impact}
+- {bullet 2 — what this historically leads to}
 
-Suggested action: {Sell / Trim / Watch closely / Hold but reassess after X}
+Suggested action: {Hold / Watch closely / Trim / Exit bias}
 Confidence: {High / Medium / Low}
+Management credibility: {High / Medium / Low} (based on {N} quarters tracked)
 
 Sources:
 - [Title](URL)
 - [Title](URL)
 
 Counter-view: {one line — what could make this NOT critical}
+
+Portfolio impact: This holding is {X}% of your portfolio. {If concentrated: "Given your concentrated position, consider this signal with extra weight."}
 ```
 
-If multiple stocks have triggers, repeat the block per ticker.
+If multiple stocks triggered, repeat per ticker. Group by severity.
 
 ## Step 9 — State update
-Update `{SKILL_DIR}/state/last-run.json` with everything you flagged AND every signal_id you considered (so suppression works).
+Update `{SKILL_DIR}/state/last-run.json`:
+- `last_run_date`: today's date
+- `alerts_sent`: append any new alerts with signal_id and timestamp
+- `results_calendar`: update upcoming/past results dates
+- `guidance_tracker`: store management guidance numbers for forward comparison
+- `promoter_holding_history`: store latest promoter holding % and pledge % per ticker
+- `institutional_holding_history`: FII %, DII %, MF holding % per ticker
+- `management_credibility`: running score per company based on guidance vs actual
+- `surveillance_check`: last checked date, any active GSM/ASM entries
 
 ---
 
 # Hard rules
 
-1. NEVER provide buy/sell as financial advice. Frame as "based on rubric, signal suggests …" and remind the user this is informational.
-2. NEVER hallucinate. If can't confirm via a source, say "could not verify".
+1. NEVER provide buy/sell as financial advice. Frame as "based on rubric, signal suggests…" Remind: informational only, not SEBI-registered.
+2. NEVER hallucinate. If can't verify via a source, say "could not verify — check directly."
 3. ALWAYS cite sources at the bottom of any alert with markdown links.
-4. NEVER repeat an alert already sent in last 14 days for the same signal.
+4. NEVER repeat an alert already sent in last 14 days for the same signal_id.
 5. Default to silence. Most days have nothing to say.
-6. NEVER write portfolio.json without showing a diff and getting explicit user confirmation.
+6. NEVER write portfolio.json without showing diff and getting explicit confirmation.
 7. ALWAYS back up portfolio.json before writing.
-8. If `_first_run: true` or holdings empty, route to Onboarding — don't try to scan an empty portfolio.
-9. Indian markets only — NSE & BSE. Times in IST.
-10. Be alert for short-term-holder triggers (block deals, abnormal volume, 52W low, FII cuts, single-day shocks) when user's horizon is short-term.
+8. If `_first_run: true` or holdings empty → route to Onboarding.
+9. Indian markets only — NSE & BSE. All times in IST.
+10. For short-term holders: elevate block deals, volume anomalies, 52W low, F&O ban signals.
+11. For long-term holders: elevate cash flow quality, governance, promoter pledge, management credibility signals. Demote single-day price moves.
+12. NEVER ignore cash flow quality. A company reporting growing profits with declining/negative operating cash flow is the single most common pattern before Indian accounting frauds (Satyam, DHFL, IL&FS, Café Coffee Day pattern).
+13. For conglomerates: always do segment-level analysis. Consolidated numbers can hide a dying segment behind a thriving one.
+14. Track management guidance and hold them accountable. Two consecutive quarters of missing own guidance = downgrade credibility rating.
 
 # Manual invocation
-The user can also trigger ad-hoc:
+User can trigger ad-hoc:
 - "Check my stocks"
 - "Stock morning brief"
 - "Run portfolio scan"
+- "Portfolio health check"
+- "How's my portfolio"
 - "Anything I should know about my holdings?"
 
-In ad-hoc mode, run the same workflow but if nothing critical, give a one-line "All clear — no Sev-1 triggers across {N} holdings as of {time}." rather than total silence.
+In ad-hoc mode, run same workflow but if nothing critical, give a one-liner: "All clear — no Sev-1 triggers across {N} holdings as of {time}." rather than total silence.

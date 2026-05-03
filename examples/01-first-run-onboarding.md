@@ -1,37 +1,42 @@
-# Example 1 — First-run onboarding
+# Example 1 — First-run onboarding with Reliance + HDFC Bank
 
-A new user installs the skill and triggers it for the first time.
+A new user installs the skill and sets up monitoring for two holdings.
 
 ## User
 > set up stock monitor
 
 ## Claude (using the skill)
-> Welcome. Quick context on what this skill does:
+> Welcome. Here's what this skill does in a nutshell:
 >
-> 1. It watches your Indian stocks every weekday morning at 8:30 IST.
-> 2. It only pings you when something genuinely critical happens — auditor exits, surveillance moves, big earnings misses, governance issues, block deals.
-> 3. Most days you'll hear nothing. That's the design.
+> 1. It watches your Indian stocks every weekday morning.
+> 2. It ONLY pings you when something genuinely critical happens — promoter selling shares, governance failures, cash flow deterioration, surveillance moves, big earnings misses.
+> 3. When results come out, it does a deep-dive: not just headline PAT, but cash flow quality, segment trends, and whether management delivered what they promised.
+> 4. Most days you'll hear nothing. That's the design.
 >
 > Want to set it up now? How would you like to share your portfolio?
 >
-> 1. Drop a screenshot of your broker app (Zerodha Kite, Groww, Upstox, Angel One, etc.) — easiest
-> 2. Describe in text (e.g., "50 HDFC Bank at avg 1620, 10 Reliance at 2900")
-> 3. Skip for now
+> 1. **Drop a screenshot** of your broker app (Zerodha, Groww, Upstox, Angel One, etc.)
+> 2. **Describe in text** (e.g., "10 Reliance at 2900, 50 HDFC Bank at 1620")
+> 3. **Skip for now**
 
 ## User
-> 50 HDFC Bank at avg 1620
+> 10 Reliance at avg 1265, 50 HDFC Bank at avg 1620
 
 ## Claude
 > ```
 > Proposed portfolio update:
 >
->   ✱ ADD     HDFCBANK   qty: 50    avg: ₹1,620   sector: Private Banks
+>   ✱ ADD   RELIANCE   qty: 10    avg: ₹1,265   sector: Conglomerate (O2C + Digital + Retail + E&P + New Energy)
+>   ✱ ADD   HDFCBANK   qty: 50    avg: ₹1,620   sector: Private Banks (post-merger entity)
 >
-> Net result: 1 holding.
-> Invested value: ₹81,000
+>   Invested value: ₹12,650 + ₹81,000 = ₹93,650
+>   Concentration: HDFCBANK 86.5% / RELIANCE 13.5%
+>   ⚠ Note: HDFCBANK is 86.5% of portfolio — that's highly concentrated in a single stock.
+>
+> Net result: 2 holdings across 2 sectors.
 > ```
 >
-> Confirm to apply? (yes / no / edit)
+> Apply? (yes / no / edit)
 
 ## User
 > yes
@@ -39,16 +44,22 @@ A new user installs the skill and triggers it for the first time.
 ## Claude
 > ✓ Portfolio updated. Backup saved.
 >
-> Two more questions to finish setup:
+> A few setup questions:
 >
-> 1. Investment horizon: short-term (<3 months) / medium-term (3–12 months) / long-term (1+ year)?
-> 2. Set up the daily 8:30 AM IST scan? (recommended)
+> 1. **Investment horizon**: short-term (<3 months) / medium-term (3–12 months) / long-term (1+ year)?
+> 2. **Alert sensitivity**: critical only (recommended) / critical + high / daily digest?
+> 3. **Include positive signals** (promoter buying, credit upgrades, contract wins)? yes / no
+> 4. **Set up daily 8:30 AM IST scan?** (recommended)
 
 ## User
-> short-term, yes
+> long-term, critical only, yes for positive signals, yes for daily
 
 ## Claude
-> ✓ Preferences saved.
-> ✓ Scheduled task `indian-stock-monitor-daily` created — runs Mon–Fri at 8:30 IST.
+> ✓ Preferences saved: long-term horizon, critical-only alerts, positive signals enabled.
+> ✓ Daily scan scheduled — Mon–Fri at 8:30 AM IST.
 >
-> Want me to do a quick first-look scan now to flag anything sitting in the last 7 days for HDFCBANK? (~30 seconds)
+> Two things to know about your holdings:
+> - **RELIANCE** is a conglomerate — I'll track 5 segments separately: O2C (refining + petchem), Jio (Digital Services), Retail, E&P, and New Energy. Consolidated numbers alone don't tell the real story.
+> - **HDFCBANK** is post-merger with HDFC Ltd — I'll track merger integration metrics (LDR normalization, branch conversion, PSL compliance) alongside standard banking KPIs.
+>
+> Want a first-look scan now to flag anything from the last 7 days?

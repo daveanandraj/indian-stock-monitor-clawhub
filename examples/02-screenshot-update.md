@@ -1,43 +1,40 @@
-# Example 2 — Updating the portfolio via broker screenshot
+# Example 2 — Portfolio update with STCG/LTCG awareness
 
-The user just made some trades and drops a fresh Zerodha Kite Holdings screenshot.
+The user partially exits one holding and adds to another.
 
 ## User
-> [attaches Zerodha Kite Holdings screenshot]
->
-> here's my updated portfolio
+> sold 5 Reliance at 1350, bought 25 more HDFC Bank at 1580
 
 ## Claude (using the skill)
-> Reading the screenshot. I can see Zerodha Kite Holdings with 4 entries. Before I compute the diff:
->
-> Is this your **complete portfolio** (so I should remove anything I have on file but not shown), or **just changes** to layer on top of your existing holdings?
-
-## User
-> complete portfolio
-
-## Claude
 > ```
 > Proposed portfolio update:
 >
->   ✱ ADD     INFY        qty: 25     avg: ₹1,450    sector: IT Services
->   ✏ UPDATE  HDFCBANK    qty: 50 → 75 (added 25 at ₹1,580)
->                         avg: ₹1,620 → ₹1,606 (weighted)
->   ✗ REMOVE  RELIANCE    (not in screenshot — full exit)
+>   ✏ TRIM    RELIANCE   qty: 10 → 5     avg: ₹1,265 (unchanged)
+>                        Sold 5 at ₹1,350 → realized gain ₹425 (₹85/share × 5)
+>                        Holding period: 47 days → STCG applicable (20% tax)
 >
-> Calculation for HDFCBANK weighted avg:
->   ((50 × 1620) + (25 × 1580)) / 75 = ₹1,606.67 → rounded to ₹1,606
+>   ✏ ADD TO  HDFCBANK   qty: 50 → 75    avg: ₹1,620 → ₹1,607 (weighted)
+>                        Calculation: ((50 × 1620) + (25 × 1580)) / 75 = ₹1,606.67
 >
-> Summary: +1 new, 1 increased, 1 exited. Net 2 holdings after.
+>   Updated concentration:
+>     HDFCBANK: ₹1,20,525 (95.0%) ← ⚠ extremely concentrated
+>     RELIANCE: ₹6,325 (5.0%)
+>
+>   Total invested: ₹1,26,850
 > ```
+>
+> ⚠ **Concentration warning**: HDFCBANK is now 95% of your portfolio. Any bank-specific event (RBI action, NIM compression, asset quality deterioration) would hit nearly your entire invested capital. Consider diversifying.
 >
 > Apply? (yes / no / edit)
 
 ## User
-> yes
+> yes, I know about the concentration
 
 ## Claude
-> ✓ Portfolio updated.
-> ✓ Backup saved: state/portfolio-backup-2026-05-15-093412.json
-> ✓ Sectors monitored: Private Banks, IT Services
+> ✓ Portfolio updated. Backup saved.
 >
-> Want me to scan INFY for anything in the last 7 days now that you've added it?
+> Note on the RELIANCE trim:
+> - Held for 47 days → **Short-term capital gains** apply (20% flat on equity).
+> - LTCG threshold is 365 days. Had you held ~318 more days, gains above ₹1.25 lakh would have been taxed at 12.5% instead.
+>
+> Want me to scan HDFCBANK for anything in the last 7 days given you've increased your position?

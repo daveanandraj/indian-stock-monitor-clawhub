@@ -1,10 +1,10 @@
 {
   "name": "indian-stock-monitor",
   "displayName": "Indian Stock Monitor",
-  "version": "1.0.1",
-  "description": "Daily intelligent watchdog for Indian equity holdings (NSE/BSE). Silent by default — only notifies on Sev-1 critical events (governance shocks, surveillance moves, credit downgrades, earnings misses, block deals, FII cuts). Conversational portfolio management via text or broker screenshot.",
+  "version": "2.0.0",
+  "description": "Institutional-grade daily watchdog for Indian equity holdings (NSE/BSE). Built on 20 years of Indian market pattern recognition. Silent by default — surfaces only Sev-1 critical events: promoter pledge liquidation, governance collapse, cash flow manipulation, surveillance moves, earnings shocks, institutional exodus. Deep quarterly analysis with segment-level drilldown and management credibility tracking.",
   "author": "daveanandraj",
-  "license": "MIT",
+  "license": "MIT-0",
   "homepage": "https://github.com/daveanandraj/indian-stock-monitor-clawhub",
   "repository": "https://github.com/daveanandraj/indian-stock-monitor-clawhub",
   "keywords": [
@@ -17,7 +17,11 @@
     "alerts",
     "earnings",
     "fundamentals",
-    "monitoring"
+    "monitoring",
+    "promoter-pledge",
+    "cash-flow-analysis",
+    "governance",
+    "conglomerate"
   ],
   "type": "skill",
   "entryPoint": "SKILL.md",
@@ -46,5 +50,5 @@
     "platforms": ["cowork", "claude-code", "claude-desktop"]
   },
   "categories": ["finance", "personal-productivity", "monitoring"],
-  "disclaimer": "Informational only. NOT investment advice. The author is not a SEBI-registered investment advisor."
+  "disclaimer": "Informational only. NOT investment advice. The author is not a SEBI-registered investment advisor. Stock investments are subject to market risk."
 }
